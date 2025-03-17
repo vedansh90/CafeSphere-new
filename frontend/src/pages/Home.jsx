@@ -1,0 +1,128 @@
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+
+const Home = () => {
+
+  const navigate = useNavigate()
+
+  const [cafes, setCafes] = useState([])
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/owner/get-cafes")
+    .then(response => {
+      console.log("Fetched Data:", response.data);
+      setCafes(response.data)
+    })
+    .catch(error => {
+      console.log("Error fetching data")
+    });
+  }, [])
+  
+
+
+  return (
+    <div className='flex flex-col items-center gap-8 py-8'>
+        <p className='text-4xl'>Gather, Toast, Enjoy</p>
+        <input type="text" className='h-12 w-1/3 p-2 rounded-2xl' placeholder='Search your favourite Cafe' style={{backgroundColor: "#d9d9d9", border: "1px solid #ccc"}}/>
+        <div className='flex gap-6'>
+          <div className='flex-col text-center w-1/3'>
+          <img className='rounded-full w-[17vw] h-[15vw]' src="https://i.pinimg.com/originals/b1/fd/d2/b1fdd2d1d7eefbe36873d6a14c6f32b2.jpg" alt="Birthday"/>
+          <p className='font-medium pt-2'>Birthday's</p>
+          </div>
+          <div className='flex-col text-center w-1/3'>
+          <img className='rounded-full w-[17vw] h-[15vw]' src="https://images.stockcake.com/public/8/8/4/88493bbf-a6d0-4af1-a03f-848961aabd28_large/cafe-group-meeting-stockcake.jpg" alt="Casual Meetups"/>
+          <p className='font-medium pt-2'>Casual Meetups</p>
+          </div>
+          <div className='flex-col text-center w-1/3'>
+          <img className='rounded-full w-[17vw] h-[15vw]' src="https://media-cdn.tripadvisor.com/media/photo-s/26/cf/ec/99/musafir-cafe-by-the-vintage.jpg" alt="Office Parties"/>
+          <p className='font-medium pt-2'>Office Parties</p>
+          </div>
+          <div className='flex-col text-center w-1/3'>
+          <img className='rounded-full w-[17vw] h-[15vw]' src="https://jolevents.in/cdn/shop/products/anniversarysurprisenew.jpg?v=1670433512&width=533" alt="Anniversary"/>
+          <p className='font-medium pt-2'>Anniversary</p>
+          </div>
+          <div className='flex-col text-center w-1/3'>
+          <img className='rounded-full w-[17vw] h-[15vw]' src="https://img.freepik.com/premium-photo/happy-couple-celebrating-their-engagement-cafe-hugging-tightly_926199-3054610.jpg" alt="Engagement"/>
+          <p className='font-medium pt-2 '>Engagement</p>
+          </div>
+        </div>
+        <div style={{backgroundColor: "#f9f3e9", "display": "grid",
+  "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" ,
+  "gap": "20px", 
+  "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
+            {
+              cafes.map((cafe, index) => (
+                <div onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+                  <img className='h-[70%] w-full rounded' src={cafe.image} alt="" />
+                  <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
+                  <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
+                </div>
+              ))
+            }
+            
+            {/* <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+              <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FmZXxlbnwwfHwwfHx8MA%3D%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Sangam Cafe</p>
+              <p className='text-gray-500'>Bhel colony, near piplani, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Royal Cafe</p>
+              <p className='text-gray-500'>AnandNagar, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://plus.unsplash.com/premium_photo-1663932464937-e677ddfc1d55?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Sagar Gaire</p>
+              <p className='text-gray-500'>Bhavani dham, Narela, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Momo cafe</p>
+              <p className='text-gray-500'>DB city, Arera hills, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Bake N Shake</p>
+              <p className='text-gray-500'>Rangmahal Cineplex, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1542181961-9590d0c79dab?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjR8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Cafe-Chino</p>
+              <p className='text-gray-500'>Jehen-numa palace, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>Green House Bistro</p>
+              <p className='text-gray-500'>Near van vihar, Bhopal</p>
+            </div>
+            <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+            <img className='h-[70%] w-full rounded' src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
+              <p className='pt-2 font-medium text-xl text-zinc-800'>ShahNama</p>
+              <p className='text-gray-500'>6 Manohar Hamidia Road, Bhopal</p>
+            </div> */}
+        </div>
+        <div className='flex-col w-full px-4 py-1'>
+          <div className='w-2/4 bg-gray-100 mt-3 p-4 rounded-xl font-medium cursor-pointer'>
+            <p><i>Popular Cafe's Near Me</i></p>
+          </div>
+          <div className='w-2/4 bg-gray-100 mt-3 p-4 rounded-xl font-medium cursor-pointer'>
+          <p><i>Top rated Cafe's</i></p>
+          </div>
+          <div className='w-2/4 bg-gray-100 mt-3 p-4 rounded-xl font-medium cursor-pointer'>
+          <p><i>Cafe's for Birthday Parties</i></p>
+          </div>
+          <div className='w-2/4 bg-gray-100 mt-3 p-4 rounded-xl font-medium cursor-pointer'>
+          <p><i>Roof-Top Cafe's</i></p>
+          </div>
+        </div>
+        <div className='bg-gray-100 w-[95vw] p-5 rounded-xl text-center'>
+          <p className='font-medium text-xl'><i>Want to get more bookings and hype of your own cafe ??</i></p>
+          <p className='font-medium text-2xl mt-4 text-zinc-700'>Get More Bookings, Gain More Visibility – Join Our Cafe Network!</p>
+          <button onClick={() => navigate("/add-cafe")} className='text-white py-3 rounded-3xl mt-4 text-m font-medium cursor-pointer px-5' style={{backgroundColor: "#f5a25d"}}>Register as a Cafe Owner Now</button>
+        </div>
+    </div>
+  )
+}
+
+export default Home
