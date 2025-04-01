@@ -24,6 +24,17 @@ const CafeDetails = () => {
     fetchCafeDetails();
   }, [id]);
 
+  const menu = cafe?.menu || [];
+  const drink = cafe?.drink || [];
+
+  while (menu.length < 4) {
+    menu.push({itemName: "Coming soon", price: "XXX"});
+  }
+
+  while(drink.length < 4){
+    drink.push({itemName: "Coming soon", price: "XXX"});
+  }
+
   return (
     <div>
       {/* image section */}
@@ -127,42 +138,17 @@ const CafeDetails = () => {
                   <p className='text-2xl font-medium'><i>Food</i></p>
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
+                {menu?.slice(0, 4).map((item, index) => (
                   <div className='flex justify-between border border-black rounded px-2 py-2'>
                     <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Pizza</i></p>
+                      <p className='font-medium'><i>{item.itemName}</i></p>
                       <p className='text-sm'>All kind of pizza’s with extra toppings</p>
                     </div>
                     <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 150-499</p>
+                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. {item.price}</p>
                     </div>
                   </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Burger</i></p>
-                      <p className='text-sm'>All kind of pizza’s with extra toppings</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 199</p>
-                    </div>
-                  </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Sandwich</i></p>
-                      <p className='text-sm'>All kind of pizza’s with extra toppings</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 99</p>
-                    </div>
-                  </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Chole Kulche</i></p>
-                      <p className='text-sm'>All kind of pizza’s with extra toppings</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 149</p>
-                    </div>
-                  </div>
+                   ))}
                 </div>
               </div>
               {/* Drinks */}
@@ -172,42 +158,17 @@ const CafeDetails = () => {
                   <p className='text-2xl font-medium'><i>Drinks</i></p>
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
+                {drink?.slice(0, 4).map((item, index) => (
                   <div className='flex justify-between border border-black rounded px-2 py-2'>
                     <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Cappuccino</i></p>
-                      <p className='text-sm'>Espresso with steamed milk and foam</p>
+                      <p className='font-medium'><i>{item.itemName}</i></p>
+                      <p className='text-sm'>All kind of pizza’s with extra toppings</p>
                     </div>
                     <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs.199</p>
+                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. {item.price}</p>
                     </div>
                   </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Cold Brew</i></p>
-                      <p className='text-sm'>Smooth, low-acidity cold coffee</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 249</p>
-                    </div>
-                  </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Latte</i></p>
-                      <p className='text-sm'>Espresso with steamed milk</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 199</p>
-                    </div>
-                  </div>
-                  <div className='flex justify-between border border-black rounded px-2 py-2'>
-                  <div className='flex flex-col gap-2 w-3/4'>
-                      <p className='font-medium'><i>Espresso</i></p>
-                      <p className='text-sm'>Rich, full-bodied espresso shot</p>
-                    </div>
-                    <div>
-                      <p style={{color: '#FD8403'}} className='font-medium text-sm'>Rs. 299</p>
-                    </div>
-                  </div>
+                   ))}
                 </div>
               </div>
            </div>

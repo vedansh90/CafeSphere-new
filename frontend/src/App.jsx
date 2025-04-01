@@ -11,9 +11,15 @@ import OwnerLogin from "./pages/OwnerLogin"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import OwnerDashboard from "./pages/OwnerDashboard"
+import BookingDashboard from "./pages/bookingDashboard"
 import AddCafe from "./pages/AddCafe"
 import CafeDetails from "./pages/CafeDetails"
 import BookCafe from "./pages/BookCafe"
+import SearchCafe from "./pages/SearchCafe"
+import ForgotPassUser from "./pages/ForgotPassUser"
+import VerificationCodeUser from "./pages/VerificationCodeUser"
+import Profileuser from "./pages/Profileuser"
+
 
 function App() {
   return (
@@ -62,6 +68,20 @@ function App() {
         <Footer/>
         </>
       }/>
+      <Route path="/login/forgot-password" element={
+        <>
+         <Navbar/>
+        <ForgotPassUser/>
+        <Footer/>
+        </>
+      }/>
+      <Route path="/login/forgot-password/verification-code" element={
+        <>
+        <Navbar/>
+        <VerificationCodeUser/>
+        <Footer/>
+        </>
+      }/>
       <Route path="/owner/login" element={
         <>
         <Navbar/>
@@ -76,7 +96,22 @@ function App() {
         <Footer/>
         </>
       }/>
+      <Route path="/search" element={
+        <>
+        <Navbar/>
+        <SearchCafe/>
+        <Footer/>
+        </>
+      }/>
+      <Route path="/profile/:id" element={
+        <>
+        <Navbar/>
+        <Profileuser/>
+        <Footer/>
+        </>
+      }/>
       <Route path="/owner-dashboard/:id" element={<OwnerDashboard/>}/>
+      <Route path="/owner-dashboard/:id/bookings" element={<BookingDashboard/>}/>
     </Routes>
     {/* <Footer/> */}
     </>

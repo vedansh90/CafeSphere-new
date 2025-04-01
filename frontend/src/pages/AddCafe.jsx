@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const AddCafe = () => {
-
-    let [state, setState] = useState("Signup");
+    const [state, setState] = useState("Signup");
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -18,141 +17,143 @@ const AddCafe = () => {
         contactNo: "",
         bio: "",
         image: "",
-        categories: [],
-    })
+        categories: "",
+    });
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name] : e.target.value})
-    }
-    
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     const onSubmitHandler = async (event) => {
         event.preventDefault();
 
-        try{
-          const token = localStorage.getItem("token");
-          if(!token){
-            alert("Please login to add a cafe");
-            return ;
-          }
+        if (state === "Signup") {
+            if (formData.password !== formData.confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
 
-          const response = await axios.post('http://localhost:4000/owner/add-cafe', {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            ownerName: formData.ownerName,
-            location: formData.location,
-            city: formData.city,
-            contactNo: formData.contactNo
-          }, 
-          {
-            headers: {
-                Authorization: `Bearer ${token}`, // Send JWT token for authentication
-                "Content-Type": "application/json",
-            },
-        });
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("Please login to add a cafe");
+                    return;
+                }
 
-        if(response.data.success){
-          console.log("Cafe Added Successfully")
-          setFormData({
-            name: "",
-            email: "",
-            password: "",
-            location: "",
-            city: "",
-            contactNo: "",
-            ownerName: ""
-          })
-          navigate("/");
+                const response = await axios.post('http://localhost:4000/owner/add-cafe', formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (response.data.success) {
+                    alert("Cafe Added Successfully");
+                    setFormData({
+                        name: "",
+                        ownerName: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        location: "",
+                        city: "",
+                        contactNo: "",
+                        bio: "",
+                        image: "",
+                        categories: "",
+                    });
+                    navigate("/");
+                } else {
+                    alert(response.data.message);
+                }
+            } catch (error) {
+                console.error("Error adding cafe:", error);
+                alert("Failed to add cafe. Please try again later.");
+            }
+        } else {
+            // Login functionality
+            try {
+                const response = await axios.post('http://localhost:4000/owner/login', {
+                    email: formData.email,
+                    password: formData.password,
+                });
+
+                if (response.data.success) {
+                    localStorage.setItem("token", response.data.token);
+                    alert("Login Successful");
+                    navigate(`/owner-dashboard/${response.data.userId}`);
+                } else {
+                    alert(response.data.message);
+                }
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("Invalid email or password");
+            }
         }
-        else{
-          console.log(response.data.message)
-        }
+    };
 
-        }catch(err){
-          console.error("Error adding cafe:", error);
-        }
-    }
-
-  return (
-    <form onSubmit={onSubmitHandler} className=''>
-    <div style={{backgroundColor: "#F4E7DD"}} className='w-full flex justify-center py-5 ' >
-        <div style={{backgroundColor: "#D6CACB"}} className='bg-red w-[90vw] rounded-2xl px-4 py-2 pl-8 pt-8 flex'>
-            {/* left section */}
-            <div className='w-full flex flex-col gap-y-4 pl-4 pt-2'>
-                <div className='  '>
-                <p className='font-bold text-3xl'>Register your cafe now </p>
-                <div className='flex gap-2 text-sm font-medium'><p>Already have an account? <span onClick={() => setState("Login")} className='cursor-pointer' style={{color: "#FF0000"}}>Login</span></p></div>
-                </div>
-                <p style={{color: "#C1272D"}} className='text-2xl font-medium'>Fill Every Seat – Let Party Lovers Find Your Cafe!</p>
-                <div className='flex flex-col gap-y-1 w-full'>
-                  <div className='flex gap-4'>
-                    <div className='w-1/2'>
-                    <p className='text-sm'>Cafe Name</p>
-                    <input onChange={handleChange} name='name' className='bg-white w-full pl-2 rounded' type="text" placeholder='Cafe Name' />
-                  </div>
-                  <div className='w-1/2'>
-                    <p className='text-sm'>Owner Name</p>
-                    <input onChange={handleChange} name='ownerName' className='bg-white w-full pl-2 rounded' type="text" placeholder='Owner Name' />
-                  </div>
-                  </div>
-                  <div className='flex flex-col gap-y-1'>
-                    <p className='text-sm'>Cafe Bio</p>
-                  {/* <input onChange={(e) => setBio(e.target.value)} value={bio} className='bg-white w-2/2 pl-2 rounded' type="text" placeholder='Enter Location' /> */}
-                  <textarea placeholder='Bio' className='bg-white w-full pl-2 rounded' onChange={handleChange} name="bio" id=""></textarea>
-                  </div>
-                  <div className='flex flex-col gap-y-1'>
-                  <p className='text-sm'>E-mail</p>
-                  <input onChange={handleChange} name='email' className='bg-white w-2/2 pl-2 rounded' type="email" placeholder='Enter your Email' />
-                  </div>
-                  <div className='flex gap-4'>
-                    <div className='flex flex-col w-1/2'>
-                    <p className='text-sm'>Password</p>
-                    <input onChange={handleChange} name='password' className='bg-white w-full pl-2 rounded' type="password" placeholder='Password' />
-                  </div>
-                  <div className='w-1/2'>
-                    <p className='text-sm'>Confirm password</p>
-                    <input onChange={handleChange} name='confirmPassword' className='bg-white w-full pl-2 rounded' type="password" placeholder='Confirm Password' />
-                  </div>
-                  </div>
-                  <div className='flex gap-4'>
-                    <div className='flex flex-col w-1/2'>
-                    <p className='text-sm'>Location</p>
-                    <input onChange={handleChange} name='location' className='bg-white w-full pl-2 rounded' type="text" placeholder='Cafe Name' />
-                  </div>
-                  <div className='w-1/2'>
-                    <p className='text-sm'>City</p>
-                    <input onChange={handleChange} name='city' className='bg-white w-full pl-2 rounded' type="text" placeholder='Owner Name' />
-                  </div>
-                  </div>
-                  <div className='flex flex-col gap-y-1'>
-                  <p className='text-sm'>Add Categories</p>
-                  <input onChange={handleChange} name='categories' className='bg-white w-2/2 pl-2 rounded' type="number" placeholder='Phone Number' />
-                  </div>
-                  <div className='flex flex-col gap-y-1'>
-                  <p className='text-sm'>Cafe images</p>
-                  {/* <input onChange={(e) => setContactNo(e.target.value)} value={contactNo} className='bg-white w-2/2 h-20 pl-2 rounded' type="number" placeholder='' /> */}
-                  <textarea placeholder='Copy the url' className='bg-white w-2/2 pl-2 rounded' onChange={handleChange} name="image" id=""></textarea>
-                  </div>
-                  <div className='flex flex-col gap-y-1'>
-                  <p className='text-sm'>Contact Number</p>
-                  <input onChange={handleChange} name='contactNo' className='bg-white w-2/2 pl-2 rounded' type="number" placeholder='Phone Number' />
-                  </div>
-                  <button type='submit' className='bg-[#FD8403] cursor-pointer w-1/4 text-white font-medium text-lg my-5 p-2 rounded-2xl relative left-60'>Register</button>
+    return (
+        <form onSubmit={onSubmitHandler} className='w-full flex justify-center py-5 bg-[#F4E7DD]'>
+            {state === "Signup" ? 
+            <div className='bg-[#D6CACB] w-[90vw] rounded-2xl px-8 py-8 flex'>
+                {/* Left Section */}
+                <div className='w-full flex flex-col gap-y-4'>
+                    <p className='font-bold text-3xl'>Register your cafe now</p>
+                    <p className='text-sm font-medium'>
+                        <span>Already have an account? </span>
+                        <span onClick={() => setState("Login")} className='cursor-pointer text-red-600'>
+                            Login
+                        </span>
+                    </p>
+                    
+                    
+                            <input type='text' name='name' onChange={handleChange} placeholder='Cafe Name' className='input-field' required />
+                            <input type='text' name='ownerName' onChange={handleChange} placeholder='Owner Name' className='input-field' required />
+                            <textarea name='bio' onChange={handleChange} placeholder='Bio' className='input-field' required />
+                            <input type='email' name='email' onChange={handleChange} placeholder='Email' className='input-field' required />
+                            <input type='password' name='password' onChange={handleChange} placeholder='Password' className='input-field' required />
+                            <input type='password' name='confirmPassword' onChange={handleChange} placeholder='Confirm Password' className='input-field' required />
+                            <input type='text' name='location' onChange={handleChange} placeholder='Location' className='input-field' required />
+                            <input type='text' name='city' onChange={handleChange} placeholder='City' className='input-field' required />
+                            <input type='text' name='categories' onChange={handleChange} placeholder='Categories (comma separated)' className='input-field' required />
+                            <textarea name='image' onChange={handleChange} placeholder='Cafe Image URL' className='input-field' required />
+                            <input type='tel' name='contactNo' onChange={handleChange} placeholder='Contact Number' className='input-field' required />
+                        
+                    
+                    <button type='submit' className='bg-[#FD8403] w-1/3 text-white font-medium text-lg my-5 p-2 rounded-2xl'>
+                        Register
+                    </button>
                 </div>
             </div>
-            {/* right section */}
-            <div className='w-2/3 flex justify-end'>
-              <div style={{backgroundColor: "#4F352C"}} className='w-96 h-96 rounded-full'>
-                  <div className=''>
-                    <img className='w-2/3'  src="https://s3-alpha-sig.figma.com/img/8150/24c3/73adb3c93be9afb523fc7ab9c658788c?Expires=1741564800&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=oQCngjTW1AFIe9yRaltdqcaHJqfUOhqgTE~18KtunfEonmqgKvXkHn3Tb7iMyBQwaeXxiONrC~XxmLN6I0RbCdsKXY5-3NelKzIFjxijrM1KfT4vcmGctMPgPTAcuZXkQIXzE4lc7yCAuNd89zI23g0rY0KCWuo0Wqvhj~Jvf48nPeYpq9T6VqQdbkH2gUV8gR8FXmkQUPkxFAlxiAud2OOHPlnKIp~V-F5ceuPfMntXAWcfxAWTxxTG8JPy8pxuiL-KfIgJBl6Akpcl4W16JFsVJeJsRDxyTXOxFUNXmaz0ZMNmYmQH84wwj8-plYEOxLHl-96ppJeJ1HFhVv7hsw__" alt="" />
-                  </div>
+            :
+            <div className='w-[90vw] rounded-2xl px-4 py-2 flex'>
+              {/* content */}
+              <div className='w-2/4 bg-white px-8 py-8 flex flex-col items-center gap-9 justify-center rounded-l-2xl'>
+                <p className='font-medium text-2xl'>Login to your Cafe account</p>
+                <div className='flex flex-col gap-2 text-end w-2/3'>
+                <div className='text-start'>
+                  <p>Email</p>
+                  <input className='px-2 py-2 w-full' style={{backgroundColor: "#D9D9D9"}} placeholder='Enter your E-mail' type="email" onChange={handleChange} name='email' />
+                </div>
+                <div className='text-start'>
+                  <p>Password</p>
+                  <input className='px-2 py-2 w-full' style={{backgroundColor: "#D9D9D9"}} placeholder='Enter your password' type="password" onChange={handleChange} name="password" />
+                </div>
+                <span className='text-sm cursor-pointer'>Forgot Password?</span>
+                </div>
+                 <div className='flex flex-col gap-2'>
+                  <button style={{backgroundColor: "#764B36"}} className='text-white py-2 rounded-xl text-xl'>Log in</button>
+                  <span className='text-sm'>Don't have an account? <span onClick={()=> {setState("Signup")}} style={{color: "#764B36"}} className='font-medium cursor-pointer'>Click here</span></span>
+                 </div>
+              </div>
+              {/* image */}
+              <div style={{backgroundColor: "#CDA58B"}} className='w-2/4 rounded-r-2xl'>
+                 <img className='w-full max-h-[82vh] object-contain' src="./src/assets/login.png" alt="" />
               </div>
             </div>
-        </div>
-    </div>
-</form>
+            }
+        </form>
+    );
+};
 
-  )
-}
-
-export default AddCafe
+export default AddCafe;

@@ -2,6 +2,8 @@ import bcrypt from "bcrypt"
 import validator from 'validator'
 import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
+import sendWelcomeEmail from "../utils/welcomeEmail.js"
+import { generateOTP, sendResetEmail } from "../utils/sendResetEmail.js"
 
 const userLogin = async (req, res) => {
     try{
@@ -23,7 +25,7 @@ const userLogin = async (req, res) => {
             message: "Login Successful",
             token,
             userId: user._id,
-            userName: user.name 
+            userName: user.name,
         });
         }
         else{
@@ -42,24 +44,20 @@ const userSignup = async (req, res) => {
     try{
     
     const {name, email, password, location, contactNo} = req.body;
-        console.log(req.body);
-    // checking all values are present or not
+    console.log(req.body);
+    
     if(!name || !email || !password || !location || !contactNo){
         return res.json({success: false, message: "Missing details"})
     }
     
-
-    // check if the user is already present
     const isPresent = await userModel.findOne({email})
     if(isPresent){
         return res.json({success: false, message: "User already exists"})
     }
 
-    // check the email is valid
     if(!validator.isEmail(email)){
         return res.json({success: false, message: "Please Enter a valid email"})
     }
-
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
@@ -73,7 +71,9 @@ const userSignup = async (req, res) => {
     }
 
     const newUser = new userModel(userData)
-    await newUser.save()
+    await newUser.save();
+
+    sendWelcomeEmail(newUser.email, newUser.name);
 
     res.json({success: true, message: "User added successfully"})
 
@@ -85,4 +85,78 @@ const userSignup = async (req, res) => {
 
 }
 
-export {userLogin, userSignup}
+const forgotPassword = async (req, res) => {
+   try{
+    let {email} = req.body;
+
+    if(!email){
+        return res.json({success: false, message: "All feilds are required"});
+    }
+
+    const user = await userModel.findOne({email: email});
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    if(!user){
+        return res.json({success: false, message: "User not found", code});
+    }
+
+    const otp = generateOTP();
+    const otpExpiry = Date.now() + 10 * 60 * 1000;
+
+    user.resetOTP = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    await sendResetEmail(email, otp);
+
+    res.json({success: true, message: "OTP Sent to your E-mail"});
+   }
+   catch(err){
+    console.error("Forgot password error:", err);
+    res.json({success: false, message: err.message})
+   }
+}
+
+const resetPassword = async (req, res) => {
+    try{
+        let {otp} = req.body;
+
+        if(!otp){
+            return res.json({success: true, message: "Please enter the Code"});
+        }
+
+        const user = await userModel.findOne({resetOTP: otp});
+
+        if(!user){
+            return res.json({success: false, message: "Invalid code"});
+        }
+
+        if(Date.now() > user.otpExpiry) {
+            return res.json({ success: false, message: "OTP expired, please request a new one" });
+        }
+
+        res.json({success: true, message: "OTP Verified Successfully"});
+    }catch(err){
+        console.log("Reset password error");
+        res.json({success: false, message: err.message});
+    }
+}
+
+const userProfile = async (req, res) => {
+    try{
+
+        let {id} = req.params;
+        const user = await userModel.findById(req.user.id);
+
+        if(!user){
+            return res.json({success: false, message: "User not found"});
+        }
+        console.log(user);
+
+        res.json({success: true, user});
+    }catch(err){
+        res.json({ message: "Server error" });
+    }
+}
+
+export {userLogin, userSignup, forgotPassword, resetPassword, userProfile}

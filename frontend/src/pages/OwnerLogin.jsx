@@ -75,7 +75,7 @@ const OwnerLogin = () => {
 
   return (
     <form onSubmit={onSubmitHandler} className='min-h-[80vh] py-10 my-10 flex justify-center'>
-      <div className='shadow-gray-700 shadow-sm w-1/3 rounded-3xl py-3'>
+      <div style={{backgroundColor: "#D6CACB"}} className='shadow-gray-700 shadow-sm w-1/3 rounded-3xl py-3'>
         <p className='text-xl font-medium text-gray-600 text-center'>
           {state === "Signup" ? "Create account" : "Login"}
         </p>

@@ -19,12 +19,21 @@ const Home = () => {
     });
   }, [])
   
-
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const searchTerm = e.target.search.value.trim();
+    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+  };
 
   return (
     <div className='flex flex-col items-center gap-8 py-8'>
         <p className='text-4xl'>Gather, Toast, Enjoy</p>
-        <input type="text" className='h-12 w-1/3 p-2 rounded-2xl' placeholder='Search your favourite Cafe' style={{backgroundColor: "#d9d9d9", border: "1px solid #ccc"}}/>
+        <form onSubmit={handleSearch} className='flex'>
+        <button>
+        <i  className="fa-solid fa-magnifying-glass relative left-7 cursor-pointer"></i>
+        </button>
+        <input  type="text" className='h-12 w-3/3 p-2 rounded-2xl pl-10' placeholder='Search your favourite Cafe' name='search' style={{backgroundColor: "#d9d9d9", border: "1px solid #ccc"}}/>
+        </form>
         <div className='flex gap-6'>
           <div className='flex-col text-center w-1/3'>
           <img className='rounded-full w-[17vw] h-[15vw]' src="https://i.pinimg.com/originals/b1/fd/d2/b1fdd2d1d7eefbe36873d6a14c6f32b2.jpg" alt="Birthday"/>
@@ -47,16 +56,22 @@ const Home = () => {
           <p className='font-medium pt-2 '>Engagement</p>
           </div>
         </div>
-        <div style={{backgroundColor: "#f9f3e9", "display": "grid",
+        <div style={{backgroundColor: "", "display": "grid",
   "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" ,
   "gap": "20px", 
   "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
             {
               cafes.map((cafe, index) => (
-                <div onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
-                  <img className='h-[70%] w-full rounded' src={cafe.image} alt="" />
+                <div style={{backgroundColor: "#f9f3e9"}} onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group'>
+                  <img className='h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500' src={cafe.image} alt="" />
                   <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
                   <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
+                  <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <i class="fa-regular fa-heart"></i>
+                  </div>
+                  <button style={{backgroundColor: "#764B36"}}
+                    className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer"
+                  >Book now</button>
                 </div>
               ))
             }

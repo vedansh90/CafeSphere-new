@@ -4,14 +4,17 @@ import { NavLink } from 'react-router-dom';
 const Navbar = () => {
 
   let [isstate, setIsState] = useState(false);
-  let [username, setUsername] = useState("")
+  let [username, setUsername] = useState("");
+  let [userId, setUserId] = useState();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsState(!!token); // Convert token to boolean (true if exists, false if not)
     const storedName = localStorage.getItem("userName");
+    const userid = localStorage.getItem("userId");
         if (storedName) {
             setUsername(storedName);
+            setUserId(userid);
         }
   }, []);
 
@@ -47,16 +50,16 @@ const Navbar = () => {
               {/* <i className='' class="fa-solid fa-chevron-down"></i> */}
               <div className='absolute top-0 right-0 pt-14 hidden group-hover:block'>
                 <div className='bg-gray-100 flex-col p-5 w-32 rounded-3xl'>
-                <NavLink >My profile</NavLink><br />
+                <NavLink to={`/profile/${userId}`}>My profile</NavLink><br />
                 <span onClick={handleLogout}>Logout</span>
                 </div>
               </div>
             </div> : <>
             <NavLink to={"/login"}>
-            <li className='cursor-pointer text-m font-medium'>Register</li>
+            <li style={{color: '#764B36'}} className='cursor-pointer text-m font-medium'>Register</li>
             </NavLink>
             <NavLink to={"/login"}>
-            <li className='cursor-pointer text-m font-medium'>Sign in</li>
+            <li style={{color: '#764B36'}} className='cursor-pointer text-m font-medium'>Sign in</li>
             </NavLink>
             </>
             }
