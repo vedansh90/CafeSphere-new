@@ -5,8 +5,8 @@ import authMiddleware from '../middleware/authMiddleware.js'
 
 const userRouter = express()
 
-userRouter.post("/login", userLogin)
-userRouter.post("/signup", userSignup)
+userRouter.post("/login", userLogin);
+userRouter.post("/signup", userSignup);
 userRouter.post("/login/forgot-password", forgotPassword);
 userRouter.post("/login/reset-password", resetPassword);
 userRouter.get("/profile", authMiddleware, userProfile);
