@@ -15,13 +15,20 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+const corsOptions = {
+    origin: 'http://localhost:5173', // Your Vite frontend port
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+  };
+  app.use(cors(corsOptions));
 app.use(express.urlencoded({extended: true}))
 
 // Api endpoints
 app.use("/owner", cafeownerRouter); 
 app.use("/user", userRouter)
 app.use("/cafe", cafeRouter)
+
 
 app.get("/", (req, res) => {
     res.send("Api working great");

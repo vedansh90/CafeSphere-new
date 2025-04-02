@@ -5,14 +5,28 @@ import { useParams } from 'react-router-dom'
 const Profileuser = () => {
 
     const {id} = useParams();
+    const token = localStorage.getItem("token");
 
-    useEffect(()=> {
-
+    useEffect(() => {
         const fetchUser = async () => {
-            const response = axios.get(`http://localhost:4000/user/profile${id}`);
-            console.log(response.data)
+            try {
+                const response = await axios.get(`http://localhost:4000/user/profile/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error");
+            }
+        };
+
+        if (token) {
+            fetchUser();
+        } else {
+            console.log("No token found.");
         }
-    })
+    }, [id, token]); 
 
   return (
     <div className='flex' style={{backgroundColor: "#F4E7DD"}}>

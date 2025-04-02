@@ -9,6 +9,6 @@ userRouter.post("/login", userLogin)
 userRouter.post("/signup", userSignup)
 userRouter.post("/login/forgot-password", forgotPassword);
 userRouter.post("/login/reset-password", resetPassword);
-userRouter.get("/profile/:id",authMiddleware, userProfile);
+userRouter.get("/profile", authMiddleware, userProfile);
 
 export default userRouter

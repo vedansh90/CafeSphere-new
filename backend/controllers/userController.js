@@ -18,7 +18,7 @@ const userLogin = async (req, res) => {
             if(!isMatch){
                 return res.json({success: false, message: "Incorrect password"})
             }
-            const token = jwt.sign({ id: user._id }, "your_secret_key", { expiresIn: "1h" });
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "2h" });
             console.log(user);
              res.status(200).json({
             success: true,
@@ -143,19 +143,20 @@ const resetPassword = async (req, res) => {
 }
 
 const userProfile = async (req, res) => {
-    try{
-
-        let {id} = req.params;
-        const user = await userModel.findById(req.user.id);
+    try{      
+        const user = await userModel.findById(req.userId);
+        console.log(user);
+        console.log(req.userId);
+        console.log("dndn")
 
         if(!user){
-            return res.json({success: false, message: "User not found"});
+            return res.json({success: false, message: "User not ffound"});
         }
         console.log(user);
 
         res.json({success: true, user});
     }catch(err){
-        res.json({ message: "Server error" });
+        res.json({ message: err.message });
     }
 }
 
