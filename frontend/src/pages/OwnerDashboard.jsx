@@ -1,133 +1,189 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import RevenueChart from "../components/RevenueChart";
+ import { useState, useEffect } from "react";
+ import {  useParams } from 'react-router-dom'
 
-const OwnerDashboard = () => {
+const Dashboard = () => {
+  const [currentDateTime, setCurrentDateTime] = useState("");
+  const [activeSection, setActiveSection] = useState("Bookings"); // State to track active section
+  const [bookings, setBookings] = useState([]);
+  const { id } = useParams();
 
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    let {id} = useParams();
-    let [owner, setOwner] = useState({});
-    let [totalGuests, setTotalGuests] = useState(0);
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [revenueData, setRevenueData] = useState([]);
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date();
+      setCurrentDateTime(now.toLocaleString());
+    };
+    updateDateTime();
     
-      useEffect(() => {
-        setRevenueData([
-            { "month": "Jan", "revenue": 5000 },
-            { "month": "Feb", "revenue": 7000 },
-            { "month": "Mar", "revenue": 6500 },
-            { "month": "Apr", "revenue": 8000 },
-            { "month": "May", "revenue": 9000 },
-            { "month": "Jun", "revenue": 7500 }
-          ])
-      }, []);
+    const interval = setInterval(updateDateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
+    fetch(`http://192.168.1.3:4000/owner/owner-dashboard/${id}`)
+      .then((response) => {response.json()})
+      
+      .then((data) => {
+        setBookings(data.bookings || []);
+      })
+      .catch((error) => console.error("Error fetching bookings:", error));
+      
+  }, []);
 
-    useEffect(() => {
-        axios.get(`http://localhost:4000/owner/owner-dashboard/${id}`)
-        .then(response => {
-            console.log(response.data);
-            console.log(response.data.bookings);
-            console.log("done");
-            setOwner(response.data);
+   
+  const stats = [
+    { title: "Total Bookings", value: "123", subtitle: "All-time booking count", icon: "📅" },
+    { title: "This Month", value: "25", subtitle: "Bookings this month", icon: "📅" },
+    { title: "Revenue", value: "$5280", subtitle: "From bookings and events", icon: "🔒" },
+    { title: "Average party size", value: "8.3", subtitle: "Guests per booking", icon: "👥" },
+  ];
 
-            const total = response.data.bookings?.reduce((sum, booking) => sum + booking.guests, 0) || 0;
-            setTotalGuests(total);
-        })
-        .catch(err => {
-            console.log("Error Fetching data")
-        })
-    }, [id]);
+  
+  
+  
+  
+  
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-          setCurrentTime(new Date());
-        }, 1000);
-    
-        return () => clearInterval(interval);
-    }, []);
-
-    const isActive = (path) => location.pathname === path ? "text-white font-semibold" : "text-gray-200/80";
+  const reviews = [
+    {
+      id: 1,
+      name: "Roy Keene",
+      rating: 4.2,
+      review: "I enjoyed the place as well as the environment. The staff was amazing and also took care of our orders.",
+    },
+    {
+      id: 2,
+      name: "Samuel Eto",
+      rating: 4.5,
+      review: "Great ambiance! Will visit again for sure.",
+    },
+    {
+      id: 3,
+      name: "Wayne Rooney",
+      rating: 3.8,
+      review: "The food was good, but the service could be improved.",
+    },  
+  ];
 
   return (
-    <div className='flex h-[100vh]'>
-        {/* left side */}
-        <div style={{backgroundColor: "#994812"}} className='w-1/4'>
-            <div className='h-2/4 flex flex-col justify-between'>
-            <div className='flex justify-start pt-3 ps-4 pb-3 shadow-[0_4px_10px_rgba(255,255,255,0.2)]'>
-                <p className='font-medium text-2xl text-[#F5E1C8]'>CafeSphere</p>
-            </div>
-
-            <ul className='flex flex-col justify-evenly h-2/3'>
-                <li onClick={()=> navigate(`/owner-dashboard/${id}`)} className={`ps-15 pt-2 text-xl border-b border-white-800 cursor-pointer ${isActive(`/owner-dashboard/${id}`)}`}>Dashboard</li>
-                <li onClick={()=> navigate(`/owner-dashboard/${id}/bookings`)} className={`ps-15 pt-2 text-xl border-b border-white-800 cursor-pointer ${isActive(`/owner-dashboard/${id}/bookings`)}`}>Bookings</li>
-                <li className='ps-15 pt-2 text-gray-200/80 text-xl border-b border-b-gray-400 cursor-pointer'>Menu items</li>
-                <li className='ps-15 pt-2 text-gray-200/80 text-xl border-b border-b-gray-400 cursor-pointer'>Customer Details</li>
-                <li className='ps-15 pt-2 text-gray-200/80 text-xl border-b border-b-gray-400 cursor-pointer'>Settings</li>
-            </ul>
-            </div>
+    <div className="bg-[#EDE0D4] min-h-screen">
+      {/* Navbar */}
+      <div className="bg-white shadow-md p-4 flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold text-[#5A3E2B]">CafeSphere</h1>
+        <div className="flex items-center space-x-4">
+          <button className="text-gray-600 text-lg">🔔</button>
+          <button className="bg-[#B03030] text-white px-4 py-2 rounded">Log out</button>
         </div>
+      </div>
 
-        {/* right side */}
-        <div style={{backgroundColor: "#2D1E19"}} className='flex-col w-full text-white h-100vw'>
-            <div className='flex justify-between pt-3 ps-4 pb-3 shadow-[0_4px_10px_rgba(255,255,255,0.2)]'>
-                <p className='text-lg'>Welcome, <span className='text-amber-500 text-2xl'>{owner.ownerName}</span></p>
-                <div>
-                    <p className='pr-10'>{owner.name}</p>
-                </div>
-            </div>
-            <div className='flex flex-col h-2/3'>
-                <div className='flex flex-col h-4/4 justify-evenly pb-6'>
-                <div className='flex flex-col py-8 px-13 gap-1'>
-                    <p className='text-4xl'>Dashboard</p>
-                    <p className='text-gray-200/70'>
-                        {currentTime.toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                        })}{" "}
-                        |{" "}
-                        {currentTime.toLocaleTimeString("en-IN", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: true,
-                        })}
-                    </p>
-                </div>
-                <div className='flex w-full justify-evenly'>
-                    <div className='h-[23vh] w-[15vw] p-2 flex flex-col justify-between rounded-xl pt-3 ps-4 pb-4' style={{backgroundColor: "#4f352c"}}>
-                        <p className='text-gray-200/90'>Total Bookings</p>
-                        <p><span className='text-6xl text'>{owner.bookings?.length || 0}</span> bookings</p>
-                    </div>
-                    <div className='h-[23vh] w-[15vw] p-2 flex flex-col justify-between rounded-xl pt-3 ps-4 pb-4' style={{backgroundColor: "#4f352c"}}>
-                    <p className='text-gray-200/90'>Menu</p>
-                    <p><span className='text-6xl text'>{owner.menu?.length || 0}</span> items</p>
-                    </div>
-                    <div className='h-[23vh] w-[15vw] p-2 flex flex-col justify-between rounded-xl pt-3 ps-4 pb-4' style={{backgroundColor: "#4f352c"}}>
-                        <p className='text-gray-200/90'>Total Revenue (In Rs)</p>
-                        <p className='text-6xl text'>6258</p>
-                    </div>
-                    <div className='h-[23vh] w-[15vw] p-2 flex flex-col justify-between rounded-xl pt-3 ps-4 pb-4' style={{backgroundColor: "#4f352c"}}>
-                    <p className='text-gray-200/90'>Total Customers</p>
-                    <p><span className='text-6xl text'>{totalGuests}</span> customers</p>
-                    </div>
-                </div>
-                </div>
-                <hr className='border-gray-200/50' />
+      {/* Dashboard Header */}
+      <div className="max-w-7xl mx-auto p-6">
+        <h1 className="text-2xl font-bold text-[#5A3E2B]">The Cozy Bean</h1>
+        <h6 className="text-gray-600">Owner Dashboard</h6>
+        <p className="text-sm text-gray-500">{currentDateTime}</p>
+      </div>
 
-                <div className='h-3/3 flex p-2 m-2 justify-evenly gap-3'>
-                    <div style={{backgroundColor: "#4f352c"}} className='w-[37vw] h-[38vh] rounded-xl'></div>
-                    <div style={{backgroundColor: "#4f352c"}} className='w-[37vw] h-[38vh] rounded-xl flex items-center'>
-                    <RevenueChart data={revenueData} />
-                    </div>
-                </div>
+      {/* Stats Section */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 rounded-lg">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white p-4 rounded-lg border border-[#5A3E2B]">
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-medium text-[#5A3E2B]">{stat.title}</h3>
+              <span className="text-lg">{stat.icon}</span>
             </div>
-        </div>
+            <p className="text-2xl font-bold text-[#5A3E2B] mt-2">{stat.value}</p>
+            <p className="text-xs text-[#5A3E2B]">{stat.subtitle}</p>
+          </div>
+        ))}
+      </div>
+
+      <hr className="border-t-2 border-[#5A3E2B] my-6 w-full" />
+
+      {/* Dashboard Navigation */}
+      <div className="flex max-w-7xl mx-auto space-x-4 mb-4">
+        <button
+          className={`px-4 py-2 rounded ${activeSection === "Bookings" ? "bg-[#D2B48C] text-white" : "bg-[#F5EDE6] text-gray-700"}`}
+          onClick={() => setActiveSection("Bookings")}
+        >
+          Bookings
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${activeSection === "Menu" ? "bg-[#D2B48C] text-white" : "bg-[#F5EDE6] text-gray-700"}`}
+          onClick={() => setActiveSection("Menu")}
+        >
+          Menu
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${activeSection === "Reviews" ? "bg-[#D2B48C] text-white" : "bg-[#F5EDE6] text-gray-700"}`}
+          onClick={() => setActiveSection("Reviews")}
+        >
+          Reviews
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${activeSection === "Settings" ? "bg-[#D2B48C] text-white" : "bg-[#F5EDE6] text-gray-700"}`}
+          onClick={() => setActiveSection("Settings")}
+        >
+          Settings
+        </button>
+      </div>
+
+      {/* Conditional Sections */}
+      <div className="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        {activeSection === "Bookings" && (
+          <>
+            <h2 className="text-2xl font-semibold mb-4 text-[#5A3E2B]">Recent Bookings</h2>
+            <div className="space-y-4">
+              {bookings.map((booking, index) => (
+                <div key={index} className="p-4 border border-[#5A3E2B] shadow rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold">{booking.name}</h3>
+                      <p className="text-sm text-gray-600">{booking.date}</p>
+                      <p className="text-sm">Occasion: <strong>{booking.occasion}</strong></p>
+                      <p className="text-sm">Guests: <strong>{booking.guests} people</strong></p>
+                      <p className="text-sm">Table: <strong>{booking.table}</strong></p>
+                    </div>
+                    <div>
+                      {booking.status === "Pending" && (
+                        <span className="text-yellow-600 px-2 py-1 rounded bg-yellow-100">Pending</span>
+                      )}
+                      {booking.status === "Confirmed" && (
+                        <span className="text-green-600 px-2 py-1 rounded bg-green-100">Confirmed</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex space-x-2">
+   {booking.status === "Pending" && (
+     <>
+       <button className="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
+       <button className="bg-red-500 text-white px-4 py-2 rounded">Reject</button>
+     </>
+   )}
+   <button className="bg-gray-500 text-white px-4 py-2 rounded">Message</button>
+   <button className="bg-blue-500 text-white px-4 py-2 rounded">View Details</button>
+ </div>
+                </div>
+                
+              ))}
+            </div>
+          </>
+        )}
+
+        {activeSection === "Reviews" && (
+          <>
+            <h2 className="text-2xl font-semibold mb-4 text-[#5A3E2B]">Customer Reviews</h2>
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="p-4 border border-[#5A3E2B] shadow rounded-lg">
+                  <h3 className="text-lg font-semibold">{review.name}</h3>
+                  <p className="text-yellow-500">⭐ {review.rating}</p>
+                  <p className="text-gray-600 mt-1">{review.review}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default OwnerDashboard
+export default Dashboard;
