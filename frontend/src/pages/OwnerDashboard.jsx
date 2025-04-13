@@ -1,9 +1,10 @@
  import { useState, useEffect } from "react";
  import {  useParams } from 'react-router-dom'
+ import axios from 'axios'
 
 const Dashboard = () => {
   const [currentDateTime, setCurrentDateTime] = useState("");
-  const [activeSection, setActiveSection] = useState("Bookings"); // State to track active section
+  const [activeSection, setActiveSection] = useState("Bookings");
   const [bookings, setBookings] = useState([]);
   const { id } = useParams();
 
@@ -17,16 +18,22 @@ const Dashboard = () => {
     const interval = setInterval(updateDateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-  useEffect(() => {
-    fetch(`http://192.168.1.3:4000/owner/owner-dashboard/${id}`)
-      .then((response) => {response.json()})
-      
-      .then((data) => {
-        setBookings(data.bookings || []);
-      })
-      .catch((error) => console.error("Error fetching bookings:", error));
-      
-  }, []);
+
+useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/owner/owner-dashboard/${id}`);
+        console.log(response.data.bookings);
+        setBookings(response.data.bookings);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    if (id) {
+      fetchData();
+    }
+  }, [id]); 
 
    
   const stats = [
@@ -135,7 +142,7 @@ const Dashboard = () => {
                 <div key={index} className="p-4 border border-[#5A3E2B] shadow rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="text-lg font-semibold">{booking.name}</h3>
+                      <h3 className="text-lg font-semibold">{booking.bookingName}</h3>
                       <p className="text-sm text-gray-600">{booking.date}</p>
                       <p className="text-sm">Occasion: <strong>{booking.occasion}</strong></p>
                       <p className="text-sm">Guests: <strong>{booking.guests} people</strong></p>

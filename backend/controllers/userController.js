@@ -4,6 +4,8 @@ import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 import sendWelcomeEmail from "../utils/welcomeEmail.js"
 import { generateOTP, sendResetEmail } from "../utils/sendResetEmail.js"
+import bookingModel from '../models/bookingModel.js';
+import cafeModel from "../models/cafeModel.js"
 
 const userLogin = async (req, res) => {
     try{
@@ -18,7 +20,8 @@ const userLogin = async (req, res) => {
             if(!isMatch){
                 return res.json({success: false, message: "Incorrect password"})
             }
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "2h" });
+            const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "30d" });
+            console.log("Signing Token With Secret:", process.env.JWT_SECRET);
             console.log(user);
              res.status(200).json({
             success: true,
@@ -144,13 +147,25 @@ const resetPassword = async (req, res) => {
 
 const userProfile = async (req, res) => {
     try{      
-        const user = await userModel.findById(req.userId);
+
+        let {id} = req.params;
+
+        const user = await userModel.findById(id)
+        .populate({
+            path: "bookings",
+            populate: {
+                path: "cafe",
+            }
+        })
+        .populate({
+            path: "savedCafes",
+        });
         console.log(user);
         console.log(req.userId);
         console.log("dndn")
 
         if(!user){
-            return res.json({success: false, message: "User not ffound"});
+            return res.json({success: false, message: "User not found"});
         }
         console.log(user);
 
@@ -160,4 +175,75 @@ const userProfile = async (req, res) => {
     }
 }
 
-export {userLogin, userSignup, forgotPassword, resetPassword, userProfile}
+const saveCafeToUser = async (req, res) => {
+    try {
+        
+        const user = await userModel.findById(req.user.id);
+        if(!user){
+            return res.json({success: false, message: "User not found"});
+        }
+
+        const {cafeId} = req.body; 
+        const cafe = await cafeModel.findById(cafeId);
+        if(!cafe){
+            return res.json({success: false, message: "Cafe not found"});
+        }
+
+        if (user.savedCafes.includes(cafeId)) {
+            return res.status(400).json({ message: "Cafe already in wishlist" });
+        }
+
+        user.savedCafes.push(cafeId);
+        await user.save();
+
+        res.status(200).json({ message: "Cafe added to Saved cafe", savedCafes: user.savedCafes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+const savedCafes = async (req, res) => {
+    try{
+        
+        const user = await userModel.findById(req.user.id)
+        .populate({
+            path: "savedCafes",
+        });
+        if(!user){
+            return res.json({success: false, message: "User not found"});
+        }
+        const savedCafe = user.savedCafes;
+
+        res.json({success: true, savedCafes: savedCafe });
+        
+    }
+    catch(err){
+        res.json({success: false, message: err.message});
+    }
+}
+
+const bookedCafes = async (req, res) => {
+    try{
+        const user = await userModel.findById(req.user.id)
+        .populate({
+            path: "bookings",
+            populate: {
+                path: "cafe", 
+            }
+        });
+
+        if(!user){
+            return res.json({success: false, message: "Cafenot found"});
+        }
+        
+        const bookedCafes = user.bookings;
+        res.json({success: true, bookedCafes});
+    }
+    catch(err){
+        return res.json({success: false, message: err.message});
+    }
+}
+
+
+export {userLogin, userSignup, forgotPassword, resetPassword, userProfile, saveCafeToUser, savedCafes, bookedCafes}

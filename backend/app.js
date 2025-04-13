@@ -7,12 +7,22 @@ import cafeownerRouter from './routes/cafeownerRoute.js'
 import userRouter from './routes/userRoute.js'
 import cafeRouter from './routes/cafeRoute.js'
 
+// const express = require('express');
+// const cors = require('cors');
+// require('dotenv').config();
+// const connectDB = require('./config/mongodb.js');
+// const connectCloudinary = require('./config/cloudinary.js');
+// const cafeownerRouter = require('./routes/cafeownerRoute.js');
+// const userRouter = require('./routes/userRoute.js');
+// const express = require('express');
+// const cafeRouter = require('./routes/cafeRoute.js');
+
 // app config
 const app = express()
 const port = process.env.PORT || 4000
 connectDB()
 connectCloudinary()
-
+console.log("Loaded JWT Secret:", process.env.JWT_SECRET);
 // middlewares
 app.use(express.json())
 const corsOptions = {
