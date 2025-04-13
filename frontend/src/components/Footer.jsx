@@ -1,21 +1,74 @@
-import React from 'react'
+import { Instagram, Facebook, Utensils } from "lucide-react";
 
 const Footer = () => {
   return (
-    <div className='' style={{backgroundColor: '#764b36'}}>
-        <div className='flex'>
-            <img className='w-1/3 h-1/3' src="https://plus.unsplash.com/premium_photo-1674327105074-46dd8319164b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y29mZmV8ZW58MHx8MHx8fDA%3D" alt="" />
-            <img className='w-1/3 h-1/3' src="https://img.freepik.com/free-photo/close-up-barista-making-cappuccino-bartender-preparing-coffee-drink_1150-14699.jpg?ga=GA1.1.1351037294.1729501139" alt="" />
-            <img className='w-1/3 h-1/3' src="https://images.unsplash.com/photo-1545731939-9c302d5d27ed?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGNvZmZlZSUyMGNhZmV8ZW58MHx8MHx8fDA%3D" alt="" />
-        </div>
-        <div className='flex-col text-center' style={{color: "#ffd5ad"}}>
-            <p className='mt-4 font-mono'>CAFESPHERE</p>
-            <p className='mt-4 font-medium text-xl'>"Create Unforgettable Moments in the Perfect Café—Book Your Next Event Today!"</p>
-            <p className='mt-2.5 font-medium text-xl'>Contact Us - cafesphere@gmail.com</p>
-            <p className='mt-4 pb-5 text-sm'>© 2024 CafeSphere. All rights reserved. Terms of Service | Privacy Policy</p>
-        </div>
-    </div>
-  )
-}
+    <footer className="bg-[#6F4D36] text-white py-16 px-6 md:px-16">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-12">
+        {/* Left Section */}
+        <div className="flex-1 text-center md:text-left">
+          <h2 className="text-2xl font-bold flex justify-center md:justify-start items-center gap-2">
+            <span>☕</span> CafeSphere
+          </h2>
+          <p className="text-sm italic mt-4 text-[#E2DAB2] leading-relaxed">
+            Find and book the perfect café for your <br className="hidden sm:block" />
+            celebrations, birthdays, anniversaries, and special occasions.
+          </p>
 
-export default Footer
+          {/* Social Icons */}
+          <div className="flex justify-center md:justify-start items-center gap-5 mt-6">
+            <Instagram className="w-6 h-6 cursor-pointer transition-transform transform hover:scale-110 hover:text-[#D4AE36]" />
+            <Facebook className="w-6 h-6 cursor-pointer transition-transform transform hover:scale-110 hover:text-[#D4AE36]" />
+            <Utensils className="w-6 h-6 cursor-pointer transition-transform transform hover:scale-110 hover:text-[#D4AE36]" />
+          </div>
+        </div>
+
+        {/* Links Sections */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-center md:text-left w-full md:w-auto">
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-[#D4AE36] text-lg relative pb-2 border-b-2 border-[#D4AE36] w-max mx-auto md:mx-0">
+              Quick links
+            </h3>
+            <ul className="text-sm mt-4 space-y-3 text-[#E2DAB2]">
+              <li className="hover:text-white transition duration-300 cursor-pointer">Home</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">Find Café’s</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">About us</li>
+            </ul>
+          </div>
+
+          {/* For Users */}
+          <div>
+            <h3 className="font-bold text-[#D4AE36] text-lg relative pb-2 border-b-2 border-[#D4AE36] w-max mx-auto md:mx-0">
+              For Users
+            </h3>
+            <ul className="text-sm mt-4 space-y-3 text-[#E2DAB2]">
+              <li className="hover:text-white transition duration-300 cursor-pointer">Sign in</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">Register</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">My bookings</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">My profile</li>
+            </ul>
+          </div>
+
+          {/* For Cafe Owners */}
+          <div>
+            <h3 className="font-bold text-[#D4AE36] text-lg relative pb-2 border-b-2 border-[#D4AE36] w-max mx-auto md:mx-0">
+              For Cafe Owners
+            </h3>
+            <ul className="text-sm mt-4 space-y-3 text-[#E2DAB2]">
+              <li className="hover:text-white transition duration-300 cursor-pointer">Owner login</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">List your cafe</li>
+              <li className="hover:text-white transition duration-300 cursor-pointer">Owner dashboard</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Copyright */}
+      <div className="border-t border-white/30 mt-12 pt-6 text-center text-sm text-[#E2DAB2]">
+        © 2025 CaféCelebrate. All rights reserved.
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

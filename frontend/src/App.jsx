@@ -19,6 +19,9 @@ import SearchCafe from "./pages/SearchCafe"
 import ForgotPassUser from "./pages/ForgotPassUser"
 import VerificationCodeUser from "./pages/VerificationCodeUser"
 import Profileuser from "./pages/Profileuser"
+import Signup from "./pages/signup"
+ 
+ 
 
 
 function App() {
@@ -47,6 +50,7 @@ function App() {
         <Footer/>
         </>
       }/>
+      
       <Route path="/cafe/:id" element={
         <>
         <Navbar/>
@@ -68,6 +72,13 @@ function App() {
         <Footer/>
         </>
       }/>
+       <Route path="/sign" element={
+   <>
+    <Navbar/>
+   <Signup/>
+   <Footer/>
+   </>
+ }/>
       <Route path="/login/forgot-password" element={
         <>
          <Navbar/>
@@ -107,10 +118,14 @@ function App() {
         <>
         <Navbar/>
         <Profileuser/>
+        
+        
+        
+      
         <Footer/>
         </>
       }/>
-      <Route path="/owner-dashboard/:id" element={<OwnerDashboard/>}/>
+      <Route path="/owner-dashboard/:id" element={<> <OwnerDashboard/> <Footer/> </>}/>
       <Route path="/owner-dashboard/:id/bookings" element={<BookingDashboard/>}/>
     </Routes>
     {/* <Footer/> */}

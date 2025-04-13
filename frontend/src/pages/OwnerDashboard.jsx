@@ -18,6 +18,18 @@ const Dashboard = () => {
     const interval = setInterval(updateDateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+<<<<<<< HEAD
+  useEffect(() => {
+    fetch(`http://192.168.1.2:4000/owner/owner-dashboard/${id}`)
+      .then((response) => {response.json()})
+      
+      .then((data) => {
+        setBookings(data.bookings || []);
+      })
+      .catch((error) => console.error("Error fetching bookings:", error));
+      
+  }, []);
+=======
 
 useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +46,7 @@ useEffect(() => {
       fetchData();
     }
   }, [id]); 
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
 
    
   const stats = [

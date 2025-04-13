@@ -14,7 +14,7 @@ const CafeDetails = () => {
     window.scrollTo(0, 0);
     const fetchCafeDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/cafe/${id}`);
+        const response = await axios.get(`http://192.168.1.2:4000/cafe/${id}`);
         setCafe(response.data);
       } catch (error) {
         console.error("Error fetching cafe details:", error);

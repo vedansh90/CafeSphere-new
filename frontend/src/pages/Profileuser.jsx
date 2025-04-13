@@ -21,13 +21,22 @@ const Profileuser = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState("profile"); // State to track active section
+<<<<<<< HEAD
+  const [savecafe, setsavecafe] =useState();
+    
+=======
   const [saveCafes, setsaveCafes] = useState([]);  
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
+<<<<<<< HEAD
+          `http://192.168.1.2:4000/user/profile/${id}`,
+=======
           `http://localhost:4000/user/profile/${id}`,
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
           {
             headers: { Authorization: `Bearer ${token} `},
           }
@@ -44,7 +53,11 @@ const Profileuser = () => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(
+<<<<<<< HEAD
+          `http://192.168.1.2:4000/user/profile/${id}`,
+=======
           `http://localhost:4000/user/profile/${id}`,
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -56,6 +69,19 @@ const Profileuser = () => {
       }
     };
 
+<<<<<<< HEAD
+
+
+    const savecafetowishlist = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.1.2:4000/user/saved-cafes`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          console.log(response.data);
+=======
     const savedCafes = async () => {
         try {
           const response = await axios.get(
@@ -65,6 +91,7 @@ const Profileuser = () => {
             }
           );
           console.log("saved cafes: ", response.data.savedCafe);
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
           setBookings(response.data);
         } catch (error) {
           console.error("Error fetching bookings:", error);
@@ -74,7 +101,11 @@ const Profileuser = () => {
     if (token && id) {
       fetchUser();
       fetchBookings(); // Call fetchBookings here
+<<<<<<< HEAD
+      savecafetowishlist();
+=======
       savedCafes();
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
     } else {
       console.log("No token found or invalid ID.");
       setLoading(false);
@@ -284,6 +315,12 @@ const Profileuser = () => {
           </div>
         )}
 
+<<<<<<< HEAD
+        {activeSection === "saved" && <CafeList />}
+        {activeSection === "settings" && <AccountSettings />}
+      </div>
+    </div>
+=======
         {activeSection === "saved" && 
         <div className="xt-2xl font-semibold text-[#563C24] mb-4  mt-2">
       <h2 className="text-2xl  mb-4  mt-5 font-semibold italic ">
@@ -312,11 +349,16 @@ const Profileuser = () => {
         {activeSection === "settings" && <AccountSettings />}
       </div>
     </div>
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
   );
 };
 
 // Cafe Card Component
+<<<<<<< HEAD
+const CafeCard = ({ name, location, rating }) => {
+=======
 const CafeCard = ({ name, location, }) => {
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
   return (
     <div className="border border-[#E6B99D] rounded-xl p-4 shadow-sm w-[280px]">
       <div className="relative w-full h-[180px] bg-gray-200 rounded-lg">
