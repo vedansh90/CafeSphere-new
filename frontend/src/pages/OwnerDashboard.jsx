@@ -18,7 +18,7 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
   useEffect(() => {
-    fetch(`http://192.168.1.3:4000/owner/owner-dashboard/${id}`)
+    fetch(`http://192.168.1.2:4000/owner/owner-dashboard/${id}`)
       .then((response) => {response.json()})
       
       .then((data) => {

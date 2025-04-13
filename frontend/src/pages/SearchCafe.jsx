@@ -17,7 +17,7 @@ const SearchCafe = () => {
         const fetchCafes = async () => {
           setLoading(true);
           try {
-            const res = await fetch(`http://localhost:4000/cafe/?search=${searchQuery}`);
+            const res = await fetch(`http://192.168.1.2:4000/cafe/?search=${searchQuery}`);
             const data = await res.json();
             setCafes(data);
           } catch (err) {
@@ -39,7 +39,7 @@ const SearchCafe = () => {
         "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
         {
               cafes.map((cafe, index) => (
-                <div onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
+                <div onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer mt-20'>
                   <img className='h-[70%] w-full rounded' src={cafe.image} alt="" />
                   <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
                   <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>

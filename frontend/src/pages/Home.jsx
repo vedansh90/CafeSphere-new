@@ -5,11 +5,15 @@ import { useNavigate } from 'react-router-dom'
 const Home = () => {
 
   const navigate = useNavigate()
+   
 
   const [cafes, setCafes] = useState([])
+  const token=localStorage.getItem("token");
+  const [liked, setLiked] = useState(false);
+
 
   useEffect(() => {
-    axios.get("http://localhost:4000/owner/get-cafes")
+    axios.get("http://192.168.1.2:4000/owner/get-cafes")
     .then(response => {
       console.log("Fetched Data:", response.data);
       setCafes(response.data)
@@ -18,6 +22,65 @@ const Home = () => {
       console.log("Error fetching data")
     });
   }, [])
+
+  const [likedCafes, setLikedCafes] = useState({});
+
+const handleHeartClick = (e, cafeId) => {
+  e.stopPropagation(); // Prevent parent div click
+  setLikedCafes((prev) => ({
+    ...prev,
+    [cafeId]: !prev[cafeId],
+  }));
+  savecafetowishlist(cafeId);
+};
+
+const savecafetowishlist = async (cafeId) => {
+  try {
+    const response = await 
+    axios.post(
+      "http://192.168.1.2:4000/user/save-cafe",
+      { cafeId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error saving cafe to wishlist:", error.response?.data || error.message);
+  }
+};
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
   
   const handleSearch = (e) => {
     e.preventDefault();
@@ -27,53 +90,139 @@ const Home = () => {
 
   return (
     <div className='flex flex-col items-center gap-8 py-8'>
-        <p className='text-4xl'>Gather, Toast, Enjoy</p>
+        <p className='text-4xl mt-16'>Gather, Toast, Enjoy</p>
         <form onSubmit={handleSearch} className='flex'>
         <button>
         <i  className="fa-solid fa-magnifying-glass relative left-7 cursor-pointer"></i>
         </button>
         <input  type="text" className='h-12 w-3/3 p-2 rounded-2xl pl-10' placeholder='Search your favourite Cafe' name='search' style={{backgroundColor: "#d9d9d9", border: "1px solid #ccc"}}/>
         </form>
-        <div className='flex gap-6'>
-          <div className='flex-col text-center w-1/3'>
-          <img className='rounded-full w-[17vw] h-[15vw]' src="https://i.pinimg.com/originals/b1/fd/d2/b1fdd2d1d7eefbe36873d6a14c6f32b2.jpg" alt="Birthday"/>
-          <p className='font-medium pt-2'>Birthday's</p>
-          </div>
-          <div className='flex-col text-center w-1/3'>
-          <img className='rounded-full w-[17vw] h-[15vw]' src="https://images.stockcake.com/public/8/8/4/88493bbf-a6d0-4af1-a03f-848961aabd28_large/cafe-group-meeting-stockcake.jpg" alt="Casual Meetups"/>
-          <p className='font-medium pt-2'>Casual Meetups</p>
-          </div>
-          <div className='flex-col text-center w-1/3'>
-          <img className='rounded-full w-[17vw] h-[15vw]' src="https://media-cdn.tripadvisor.com/media/photo-s/26/cf/ec/99/musafir-cafe-by-the-vintage.jpg" alt="Office Parties"/>
-          <p className='font-medium pt-2'>Office Parties</p>
-          </div>
-          <div className='flex-col text-center w-1/3'>
-          <img className='rounded-full w-[17vw] h-[15vw]' src="https://jolevents.in/cdn/shop/products/anniversarysurprisenew.jpg?v=1670433512&width=533" alt="Anniversary"/>
-          <p className='font-medium pt-2'>Anniversary</p>
-          </div>
-          <div className='flex-col text-center w-1/3'>
-          <img className='rounded-full w-[17vw] h-[15vw]' src="https://img.freepik.com/premium-photo/happy-couple-celebrating-their-engagement-cafe-hugging-tightly_926199-3054610.jpg" alt="Engagement"/>
-          <p className='font-medium pt-2 '>Engagement</p>
-          </div>
-        </div>
+         
+        <div className="flex flex-wrap justify-center gap-8 px-4">
+  {[
+    {
+      title: "Birthday's",
+      img: "https://i.pinimg.com/originals/b1/fd/d2/b1fdd2d1d7eefbe36873d6a14c6f32b2.jpg",
+    },
+    {
+      title: "Casual Meetups",
+      img: "https://images.stockcake.com/public/8/8/4/88493bbf-a6d0-4af1-a03f-848961aabd28_large/cafe-group-meeting-stockcake.jpg",
+    },
+    {
+      title: "Office Parties",
+      img: "https://media-cdn.tripadvisor.com/media/photo-s/26/cf/ec/99/musafir-cafe-by-the-vintage.jpg",
+    },
+    {
+      title: "Anniversary",
+      img: "https://jolevents.in/cdn/shop/products/anniversarysurprisenew.jpg?v=1670433512&width=533",
+    },
+    {
+      title: "Engagement",
+      img: "https://img.freepik.com/premium-photo/happy-couple-celebrating-their-engagement-cafe-hugging-tightly_926199-3054610.jpg",
+    },
+  ].map((item, index) => (
+    <div key={index} className="w-[40vw] sm:w-[25vw] md:w-[17vw] text-center">
+      <img
+        src={item.img}
+        alt={item.title}
+        className="rounded-full w-full h-[35vw] sm:h-[25vw] md:h-[17vw] object-cover"
+      />
+      <p className="font-medium pt-2 text-sm sm:text-base">{item.title}</p>
+    </div>
+  ))}
+</div>
+
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
         <div style={{backgroundColor: "", "display": "grid",
   "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" ,
   "gap": "20px", 
   "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
             {
-              cafes.map((cafe, index) => (
-                <div style={{backgroundColor: "#f9f3e9"}} onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group'>
-                  <img className='h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500' src={cafe.image} alt="" />
-                  <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
-                  <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
-                  <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <i class="fa-regular fa-heart"></i>
-                  </div>
-                  <button style={{backgroundColor: "#764B36"}}
-                    className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer"
-                  >Book now</button>
-                </div>
-              ))
+           cafes.map((cafe) => (
+            <div
+              key={cafe._id}
+              onClick={() => navigate(`/cafe/${cafe._id}`)}
+              className="relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group"
+            >
+              <img className="h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500" src={cafe.image} alt="" />
+              <p className="pt-2 font-medium text-xl text-zinc-800">{cafe.name}</p>
+              <p className="text-gray-500">{cafe.location}, {cafe.city}</p>
+              
+              {/* Wishlist Heart Button */}
+              <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <button onClick={(e) => handleHeartClick(e, cafe._id)}>
+                  <i className={`fa-${likedCafes[cafe._id] ? "solid" : "regular"} fa-heart text-${likedCafes[cafe._id] ? "red-500" : "black"}`} />
+                </button>
+              </div>
+          
+              <button className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer" style={{ backgroundColor: "#764B36" }}>
+                Book now
+              </button>
+            </div>
+          ))
+          
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+            
+            
+           
+           
+           
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+
+                 
+                 
+                 
+                 
+                 
+            
             }
             
             {/* <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>
