@@ -1,6 +1,7 @@
 import { model } from 'mongoose';
 import bookingModel from '../models/bookingModel.js';
 import cafeModel from '../models/cafeModel.js';
+import userModel from '../models/userModel.js';
 
 const getCafe = async (req, res) => {
     try{
@@ -63,7 +64,7 @@ const bookCafe = async (req, res) => {
         }
         
         const bookingData = {
-            // user: req.user._id,
+            user: req.user.id,
             bookingName, 
             cafe: cafe._id,
             email,
@@ -81,6 +82,11 @@ const bookCafe = async (req, res) => {
         cafe.bookings.push(newBooking._id);
         await cafe.save();
 
+        const userr = await userModel.findById(req.user.id);
+
+        userr.bookings.push(newBooking._id);
+        await userr.save();
+
         res.json({success: true, message: "Booking Successfull", newBooking});
     }
     catch(err){
@@ -89,4 +95,41 @@ const bookCafe = async (req, res) => {
     }
 }
 
-export {getCafe, bookCafe, searchCafe}
+const getLocationCafes = async (req, res) => {
+    try{
+        console.log(req.user);
+        console.log("done");
+
+        const id = req.user.id;
+        const user = await userModel.findById(id);
+        const useraddress = user.location;
+
+        const parts = useraddress.split(",")
+        const firstPart = parts[0].trim(); 
+        const secondPart = parts[1]?.trim(); 
+        const searchQuery1 = firstPart.toLowerCase();
+        const searchQuery2 = secondPart.toLowerCase();
+
+        console.log(searchQuery2);
+        console.log(searchQuery1);
+
+        let cafes = await cafeModel.find({
+            $or: [
+              { location: { $regex: searchQuery1, $options: "i" } }, // Match full address
+              { city: { $regex: searchQuery2, $options: "i" } }, // Match city
+            ],
+          });
+
+        if(cafes.length < 4){
+            const addtionalCafes = await cafeModel.aggregate([{ $sample: { size: 5 } }]);
+            cafes.push(...addtionalCafes);
+        }  
+        console.log(cafes);
+        res.json(cafes); 
+    }catch(err){
+        console.log(err.message);
+        res.json({success: false, message: "fjfjfb"})
+    }
+}
+
+export {getCafe, bookCafe, searchCafe, getLocationCafes}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { Contact } from 'lucide-react'
 
 const Home = () => {
 
@@ -8,9 +9,15 @@ const Home = () => {
    
 
   const [cafes, setCafes] = useState([])
+<<<<<<< HEAD
   const token=localStorage.getItem("token");
   const [liked, setLiked] = useState(false);
 
+=======
+  const token = localStorage.getItem("token");
+  const id = localStorage.getItem("userId");
+  console.log(token);
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
 
   useEffect(() => {
     axios.get("http://192.168.1.2:4000/owner/get-cafes")
@@ -88,6 +95,22 @@ const savecafetowishlist = async (cafeId) => {
     navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
   };
 
+  const saveCafeToWishlist = async (cafeId) => {
+    try{
+      const response = await axios.post(`http://localhost:4000/user/save-cafe`, {cafeId},
+        {
+          headers: { Authorization: `Bearer ${token} `},
+        }
+      )
+      console.log(response.data);
+      
+    }catch(err){
+      console.log(err.message);
+
+    }
+    
+  }
+
   return (
     <div className='flex flex-col items-center gap-8 py-8'>
         <p className='text-4xl mt-16'>Gather, Toast, Enjoy</p>
@@ -157,6 +180,7 @@ const savecafetowishlist = async (cafeId) => {
   "gap": "20px", 
   "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
             {
+<<<<<<< HEAD
            cafes.map((cafe) => (
             <div
               key={cafe._id}
@@ -223,6 +247,25 @@ const savecafetowishlist = async (cafeId) => {
                  
                  
             
+=======
+              cafes.map((cafe, index) => (
+                <div style={{backgroundColor: "#f9f3e9"}} onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group'>
+                  <img className='h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500' src={cafe.image} alt="" />
+                  <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
+                  <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
+                  <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <button onClick={(e)=> {
+                    e.stopPropagation();
+                    saveCafeToWishlist(cafe._id)
+                    console.log("done");
+                  }}><i class="fa-regular fa-heart"></i></button>
+                  </div>
+                  <button style={{backgroundColor: "#764B36"}}
+                    className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer"
+                  >Book now</button>
+                </div>
+              ))
+>>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
             }
             
             {/* <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>

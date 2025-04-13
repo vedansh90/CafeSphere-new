@@ -3,7 +3,7 @@ import cafeModel from "./cafeModel.js";
 import userModel from "./userModel.js";
 
 const bookingSchema = mongoose.Schema({
-    // user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
     bookingName: {type: String, required: true},
     cafe: {type: mongoose.Schema.Types.ObjectId, ref: "Cafe", required: true},
     date: {type: Date},

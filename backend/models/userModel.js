@@ -13,6 +13,8 @@ const userSchema = mongoose.Schema({
     otpExpiry: {
         type: Date, // Expiry time for OTP
     },
+    bookings : [{type: mongoose.Schema.Types.ObjectId, ref: "Booking"}],
+    savedCafes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cafe" }] 
 });
 
 const userModel = mongoose.model('User', userSchema)
