@@ -14,8 +14,8 @@ const CafeDetails = () => {
     window.scrollTo(0, 0);
     const fetchCafeDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.2:4000/cafe/${id}`);
-        setCafe(response.data);
+        const response = await axios.get(`http://192.168.1.5:4000/cafe/${id}`);
+        setCafe(response.data)
       } catch (error) {
         console.error("Error fetching cafe details:", error);
       }
@@ -182,7 +182,19 @@ const CafeDetails = () => {
               <div className='bg-white px-2 h-2/3 rounded'>
                 <p className='font-medium'>{cafe.name}</p>
                 <p className='text-sm'>{cafe.location}, {cafe.city}</p>
-                <button className='w-full text-lg my-1 bg-black text-white font-medium rounded py-0.5 cursor-pointer'>Get Directions</button>
+                <button
+  onClick={() => {
+    const name = cafe.name || '';
+    const location = cafe.location || '';
+    const city = cafe.city || '';
+    const query = encodeURIComponent(`${name}, ${location}, ${city}`);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+  }}
+  className='w-full text-lg my-1 bg-black text-white font-medium rounded py-0.5 cursor-pointer'
+>
+  Get Directions
+</button>
+
               </div>
             </div>
 

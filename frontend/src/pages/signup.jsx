@@ -22,7 +22,7 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post('http://192.168.1.2:4000/user/signup', {
+      const response = await axios.post('http://192.168.1.5:4000/user/signup', {
         name,
         email,
         location,
@@ -43,14 +43,14 @@ const Signup = () => {
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-[#F4E7DD] px-4'>
       {/* Cafe Image */}
-      <div className='w-full flex justify-center mt-16 mb-6'>
-        <img src={cafe} alt='Cafe' className='w-[30vh] sm:w-[35vh] md:w-[40vh]' />
+      <div className=' flex justify-center  mb-3'  style={{ marginTop: '-55px' }}>
+        <img src={cafe} alt='Cafe' className='w-[25vh] sm:w-[30vh] md:w-[35vh]' />
       </div>
 
       {/* Signup Card */}
       <div className='bg-white p-6 sm:p-8 rounded-lg shadow-md w-full max-w-md'>
         <h2 className='text-xl font-semibold italic text-black mb-1'>Create your account</h2>
-        <p className='text-[#6F4D36] mb-6'>Signup to Book Cafe for your celebration</p>
+        <p className='text-[#6F4D36] mb-3'>Signup to Book Cafe for your celebration</p>
 
         <form onSubmit={onSubmitHandler}>
           {/* Full Name */}
@@ -145,7 +145,7 @@ const Signup = () => {
         </form>
 
         {/* Navigation Links */}
-        <p className='text-center text-sm mt-4 text-[#6F4D36]'>
+        <p className='text-center text-sm mt-2 text-[#6F4D36]'>
           Already have an account?{' '}
           <span
             onClick={() => navigate('/login')}

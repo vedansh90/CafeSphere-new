@@ -18,9 +18,8 @@ const Dashboard = () => {
     const interval = setInterval(updateDateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-<<<<<<< HEAD
   useEffect(() => {
-    fetch(`http://192.168.1.2:4000/owner/owner-dashboard/${id}`)
+    fetch(`http://192.168.1.5:4000/owner/owner-dashboard/${id}`)
       .then((response) => {response.json()})
       
       .then((data) => {
@@ -29,24 +28,6 @@ const Dashboard = () => {
       .catch((error) => console.error("Error fetching bookings:", error));
       
   }, []);
-=======
-
-useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/owner/owner-dashboard/${id}`);
-        console.log(response.data.bookings);
-        setBookings(response.data.bookings);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-  
-    if (id) {
-      fetchData();
-    }
-  }, [id]); 
->>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
 
    
   const stats = [

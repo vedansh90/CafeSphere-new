@@ -12,7 +12,7 @@ const BookingDashboard = () => {
 
 
     useEffect(()=> {
-        axios.get(`http://192.168.1.2:4000/owner/owner-dashboard/${id}`)
+        axios.get(`http://192.168.1.5:4000/owner/owner-dashboard/${id}`)
         .then(response => {
             setcafe(response.data)
         })

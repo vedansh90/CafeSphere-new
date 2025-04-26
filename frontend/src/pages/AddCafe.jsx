@@ -40,7 +40,7 @@ const AddCafe = () => {
                     return;
                 }
 
-                const response = await axios.post('http://192.168.1.2:4000/owner/add-cafe', formData, {
+                const response = await axios.post('http://192.168.1.5:4000/owner/add-cafe', formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const AddCafe = () => {
             }
         } else {
             try {
-                const response = await axios.post('http://192.168.1.2:4000/owner/login', {
+                const response = await axios.post('http://192.168.1.5:4000/owner/login', {
                     email: formData.email,
                     password: formData.password,
                 });

@@ -17,7 +17,7 @@ const SearchCafe = () => {
         const fetchCafes = async () => {
           setLoading(true);
           try {
-            const res = await fetch(`http://192.168.1.2:4000/cafe/?search=${searchQuery}`);
+            const res = await fetch(`http://192.168.1.5:4000/cafe/?search=${searchQuery}`);
             const data = await res.json();
             setCafes(data);
           } catch (err) {

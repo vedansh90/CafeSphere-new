@@ -12,7 +12,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://192.168.1.2:4000/user/login', {
+      const response = await axios.post('http://192.168.1.5:4000/user/login', {
         email,
         password,
       });
@@ -24,6 +24,7 @@ const Login = () => {
         window.location.href = "/";
       } else {
         console.log(response.data.message);
+        alert(response.data.message);
       }
     } catch (err) {
       alert('Login failed: ' + err.message);
@@ -33,7 +34,7 @@ const Login = () => {
   return (
     <div className='w-full min-h-screen flex flex-col items-center bg-[#F4E7DD] p-4'>
       {/* Cafe Image at the Top */}
-      <img src={cafe} alt='Cafe' className='w-[40vh] sm:w-[50vh] mt-14' />
+      <img src={cafe} alt='Cafe' className='w-[40vh] sm:w-[45vh] ' />
 
       {/* Login Container */}
       <div className='w-full max-w-6xl flex flex-col md:flex-row shadow-lg rounded-2xl overflow-hidden mt-5'>

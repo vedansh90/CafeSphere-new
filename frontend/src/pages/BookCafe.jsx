@@ -36,7 +36,7 @@ const BookCafe = () => {
             console.log("Sending booking data:", formData);
 
             const response = await axios.post(
-                `http://192.168.1.2:4000/cafe/${id}/book`,
+                `http://192.168.1.5:4000/cafe/${id}/book`,
                 formData,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
