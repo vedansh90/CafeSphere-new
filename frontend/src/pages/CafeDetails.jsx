@@ -14,7 +14,7 @@ const CafeDetails = () => {
     window.scrollTo(0, 0);
     const fetchCafeDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.2:4000/cafe/${id}`);
+        const response = await axios.get(`http://localhost:4000/cafe/${id}`);
         setCafe(response.data);
       } catch (error) {
         console.error("Error fetching cafe details:", error);
@@ -182,7 +182,18 @@ const CafeDetails = () => {
               <div className='bg-white px-2 h-2/3 rounded'>
                 <p className='font-medium'>{cafe.name}</p>
                 <p className='text-sm'>{cafe.location}, {cafe.city}</p>
-                <button className='w-full text-lg my-1 bg-black text-white font-medium rounded py-0.5 cursor-pointer'>Get Directions</button>
+                <button
+                onClick={() => {
+                  const name = cafe.name || '';
+                  const location = cafe.location || '';
+                  const city = cafe.city || '';
+                  const query = encodeURIComponent(`${name}, ${location}, ${city}`);
+                  window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+                }}
+                className='w-full text-lg my-1 bg-black text-white font-medium rounded py-0.5 cursor-pointer'
+              >
+                Get Directions
+              </button>
               </div>
             </div>
 
@@ -223,9 +234,9 @@ const CafeDetails = () => {
             <div className='flex flex-col items-center py-2 my-2 rounded border border-black'>
               <p className='text-xl font-medium'>Follow us on</p>
               <div className='flex w-2/3 justify-evenly text-xl pt-2'>
-              <i class="fa-brands fa-instagram"></i>
-              <i class="fa-brands fa-facebook"></i>
-              <i class="fa-brands fa-x-twitter"></i>
+              <i class="fa-brands fa-instagram cursor-pointer"></i>
+              <i class="fa-brands fa-facebook cursor-pointer"></i>
+              <i class="fa-brands fa-x-twitter cursor-pointer"></i>
               </div>
             </div>
 

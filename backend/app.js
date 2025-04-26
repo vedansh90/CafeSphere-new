@@ -6,6 +6,10 @@ import connectCloudinary from './config/cloudinary.js'
 import cafeownerRouter from './routes/cafeownerRoute.js'
 import userRouter from './routes/userRoute.js'
 import cafeRouter from './routes/cafeRoute.js'
+import parser from './middleware/multer.js'
+import "./utils/tokenScheduler.js";
+
+
 
 // const express = require('express');
 // const cors = require('cors');
@@ -23,22 +27,51 @@ const port = process.env.PORT || 4000
 connectDB()
 connectCloudinary()
 console.log("Loaded JWT Secret:", process.env.JWT_SECRET);
-// middlewares
+
+
 app.use(express.json())
 const corsOptions = {
-    origin: 'http://localhost:5173', // Your Vite frontend port
+    origin: 'http://localhost:5173',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   };
-  app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.urlencoded({extended: true}))
+
+app.post('/upload', parser.single('image'), (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      
+      console.log("Image upload successful:", req.file);
+      
+      // Choose the appropriate property based on your storage
+      const imageUrl = req.file.path || req.file.location || req.file.url;
+      
+      if (!imageUrl) {
+        return res.status(500).json({ error: 'Failed to determine file URL' });
+      }
+      
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ error: 'File upload failed' });
+    }
+  });
+  
+
+//   app.get("/upload", (req, res) => {
+//     return res.json({message: "Working fine"});
+//   })
 
 // Api endpoints
 app.use("/owner", cafeownerRouter); 
 app.use("/user", userRouter)
 app.use("/cafe", cafeRouter)
 
+  
 
 app.get("/", (req, res) => {
     res.send("Api working great");

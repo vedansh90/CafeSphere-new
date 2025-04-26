@@ -29,12 +29,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#f9f3e9] shadow-md fixed w-full z-50">
+    <nav className="bg-[#f9f3e9] w-full z-50 shadow-[0_4px_10px_-2px_#764B36] sticky top-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between  h-16 items-center">
           {/* Logo */}
           <NavLink to={"/"}>
-            <div className="text-2xl font-bold text-[#764B36] mr"  style={{ marginLeft: "-60px" }}>CafeSphere</div>
+            <div className="text-2xl font-bold text-[#764B36] mr"  >CafeSphere</div>
           </NavLink>
 
           {/* Hamburger Menu */}
@@ -45,15 +45,13 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 items-center "  style={{ marginRight: "-60px" }}>
+          <ul className="hidden md:flex gap-8 items-center "  >
             {isstate && (
               <li className="text-[#1F5CD5]">
                 Welcome, <span className="font-medium">{username.toUpperCase()}</span>
               </li>
             )}
-            <NavLink to="/add-cafe">
-              <li className="text-[#764B36] font-medium hover:underline">Add Cafe</li>
-            </NavLink>
+            
             <NavLink to="/about">
               <li className="text-[#764B36] font-medium hover:underline">About Us</li>
             </NavLink>
@@ -83,6 +81,9 @@ const Navbar = () => {
               </div>
             ) : (
               <>
+                <NavLink to="/add-cafe">
+                  <li className="text-[#764B36] font-medium hover:underline">Add Cafe</li>
+                </NavLink>
                 <NavLink to="/login">
                   <li className="text-[#764B36] font-medium hover:underline">Register</li>
                 </NavLink>

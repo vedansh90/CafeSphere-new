@@ -17,9 +17,10 @@ const SearchCafe = () => {
         const fetchCafes = async () => {
           setLoading(true);
           try {
-            const res = await fetch(`http://192.168.1.2:4000/cafe/?search=${searchQuery}`);
+            const res = await fetch(`http://localhost:4000/cafe/?search=${searchQuery}`);
             const data = await res.json();
             setCafes(data);
+            console.log(data);
           } catch (err) {
             console.error("Search failed:", err);
           } finally {
@@ -30,20 +31,45 @@ const SearchCafe = () => {
         if (searchQuery) fetchCafes();
       }, [searchQuery]);
 
+      const [likedCafes, setLikedCafes] = useState({});
+      
+      const handleHeartClick = (e, cafeId) => {
+        e.stopPropagation(); 
+        setLikedCafes((prev) => ({
+          ...prev,
+          [cafeId]: !prev[cafeId],
+        }));
+        savecafetowishlist(cafeId);
+      };
       
 
   return (
     <div style={{backgroundColor: "#f9f3e9", "display": "grid",
         "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" ,
         "gap": "20px", 
-        "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
+        "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3 mt-5'>
         {
               cafes.map((cafe, index) => (
-                <div onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer mt-20'>
-                  <img className='h-[70%] w-full rounded' src={cafe.image} alt="" />
-                  <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
-                  <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
-                </div>
+                <div
+              key={cafe._id}
+              onClick={() => navigate(`/cafe/${cafe._id}`)}
+              className="relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group"
+            >
+              <img className="h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500" src={cafe.image} alt="" />
+              <p className="pt-2 font-medium text-xl text-zinc-800">{cafe.name}</p>
+              <p className="text-gray-500">{cafe.location}, {cafe.city}</p>
+              
+              {/* Wishlist Heart Button */}
+              <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <button onClick={(e) => handleHeartClick(e, cafe._id)}>
+                  <i className={`fa-${likedCafes[cafe._id] ? "solid" : "regular"} fa-heart text-${likedCafes[cafe._id] ? "red-500" : "black"}`} />
+                </button>
+              </div>
+          
+              <button className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer" style={{ backgroundColor: "#764B36" }}>
+                Book now
+              </button>
+            </div>
               ))
         }
     </div>

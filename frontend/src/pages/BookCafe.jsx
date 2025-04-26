@@ -26,17 +26,16 @@ const BookCafe = () => {
 
         try {
             const token = localStorage.getItem("token");
-            console.log(token);
-
+    
             if (!token) {
-                alert("User not authenticated!");
-                return;
+              alert("Please login first!");
+              navigate("/login");
+              return;
             }
-
             console.log("Sending booking data:", formData);
 
             const response = await axios.post(
-                `http://192.168.1.2:4000/cafe/${id}/book`,
+                `http://localhost:4000/cafe/${id}/book`,
                 formData,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -52,6 +51,7 @@ const BookCafe = () => {
         } catch (err) {
             console.error("Booking error:", err);
             alert(err.response?.data?.message || "An error occurred. Please try again.");
+            console.log(err.message);
         }
     };
 
@@ -70,19 +70,19 @@ const BookCafe = () => {
                     <div className='grid grid-cols-2 py-2'>
                         <div className='flex flex-col gap-1 py-1'>
                             <p className='font-medium'><i>Booking Name</i></p>
-                            <input onChange={handleChange} name='bookingName' type="text" className='border border-black w-2/3 rounded px-1' />
+                            <input onChange={handleChange} name='bookingName' type="text" className='border border-black w-2/3 rounded px-1' placeholder='John Doe'/>
                         </div>
                         <div className='flex flex-col gap-1 py-1'>
                             <p className='font-medium'><i>E-mail</i></p>
-                            <input onChange={handleChange} name='email' type="email" className='border border-black w-2/3 rounded px-1' />
+                            <input onChange={handleChange} name='email' type="email" className='border border-black w-2/3 rounded px-1' placeholder='john@email.com'/>
                         </div>
                         <div className='flex flex-col gap-1 py-1'>
                             <p className='font-medium'><i>Phone Number</i></p>
-                            <input onChange={handleChange} name='contactNo' type="number" className='border border-black w-2/3 rounded px-1' />
+                            <input onChange={handleChange} name='contactNo' type="number" className='border border-black w-2/3 rounded px-1' placeholder='7987XXXXXX'/>
                         </div>
                         <div className='flex flex-col gap-1 py-1'>
                             <p className='font-medium'><i>Number of guests</i></p>
-                            <input onChange={handleChange} name='guests' type="number" className='border border-black w-2/3 rounded px-1' />
+                            <input onChange={handleChange} name='guests' type="number" className='border border-black w-2/3 rounded px-1' placeholder='2/4/5......'/>
                         </div>
                         <div className='flex flex-col gap-1 py-1'>
                             <p className='font-medium'><i>Date</i></p>
@@ -98,7 +98,7 @@ const BookCafe = () => {
                     <div>
                         <div className='flex flex-col gap-2'>
                             <p className='font-medium'><i>Party Type</i></p>
-                            <input onChange={handleChange} name='partyType' type="text" className='border border-black w-2/4 py-1 px-1 rounded ' />
+                            <input onChange={handleChange} name='partyType' type="text" className='border border-black w-2/4 py-1 px-1 rounded ' placeholder='Birthday/Anniversary/Casual-Meetup/Date-Night.....' />
                         </div>
                         <div className='flex flex-col gap-2 py-2'>
                             <p className='font-medium'><i>Special Requests</i></p>

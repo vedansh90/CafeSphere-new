@@ -9,31 +9,28 @@ const Home = () => {
    
 
   const [cafes, setCafes] = useState([])
-<<<<<<< HEAD
   const token=localStorage.getItem("token");
   const [liked, setLiked] = useState(false);
 
-=======
-  const token = localStorage.getItem("token");
-  const id = localStorage.getItem("userId");
-  console.log(token);
->>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
 
   useEffect(() => {
-    axios.get("http://192.168.1.2:4000/owner/get-cafes")
-    .then(response => {
-      console.log("Fetched Data:", response.data);
-      setCafes(response.data)
-    })
-    .catch(error => {
-      console.log("Error fetching data")
-    });
-  }, [])
+    axios
+      .get("http://localhost:4000/cafe/location/cafes", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(response => {
+        console.log("Fetched Data:", response.data);
+        setCafes(response.data);
+      })
+      .catch(error => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
 
   const [likedCafes, setLikedCafes] = useState({});
 
 const handleHeartClick = (e, cafeId) => {
-  e.stopPropagation(); // Prevent parent div click
+  e.stopPropagation(); 
   setLikedCafes((prev) => ({
     ...prev,
     [cafeId]: !prev[cafeId],
@@ -45,7 +42,7 @@ const savecafetowishlist = async (cafeId) => {
   try {
     const response = await 
     axios.post(
-      "http://192.168.1.2:4000/user/save-cafe",
+      "http://localhost:4000/user/save-cafe",
       { cafeId },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -54,38 +51,6 @@ const savecafetowishlist = async (cafeId) => {
     console.error("Error saving cafe to wishlist:", error.response?.data || error.message);
   }
 };
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
   
   
@@ -107,7 +72,7 @@ const savecafetowishlist = async (cafeId) => {
     }catch(err){
       console.log(err.message);
 
-    }
+    } 
     
   }
 
@@ -175,12 +140,11 @@ const savecafetowishlist = async (cafeId) => {
          
          
          
-        <div style={{backgroundColor: "", "display": "grid",
+        <div style={{backgroundColor: "#f9f3e9", "display": "grid",
   "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" ,
   "gap": "20px", 
   "padding": "20px"}} className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 p-3'>
             {
-<<<<<<< HEAD
            cafes.map((cafe) => (
             <div
               key={cafe._id}
@@ -202,70 +166,8 @@ const savecafetowishlist = async (cafeId) => {
                 Book now
               </button>
             </div>
-          ))
-          
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-           
-            
-            
-           
-           
-           
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-
-                 
-                 
-                 
-                 
-                 
-            
-=======
-              cafes.map((cafe, index) => (
-                <div style={{backgroundColor: "#f9f3e9"}} onClick={()=> navigate(`/cafe/${cafe._id}`)} key={index} className='relative w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer group'>
-                  <img className='h-[70%] w-full rounded group-hover:opacity-65 transition-opacity duration-500' src={cafe.image} alt="" />
-                  <p className='pt-2 font-medium text-xl text-zinc-800'>{cafe.name}</p>
-                  <p className='text-gray-500'>{cafe.location}, {cafe.city}</p>
-                  <div className="absolute top-4 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <button onClick={(e)=> {
-                    e.stopPropagation();
-                    saveCafeToWishlist(cafe._id)
-                    console.log("done");
-                  }}><i class="fa-regular fa-heart"></i></button>
-                  </div>
-                  <button style={{backgroundColor: "#764B36"}}
-                    className="absolute bottom-12 right-5 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer"
-                  >Book now</button>
-                </div>
-              ))
->>>>>>> 05415fd5ba2255aa0ee8c02f5c1cfeaa11077230
+          ))         
+             
             }
             
             {/* <div className='w-full bg-white p-3 rounded-xl flex-col px-5 cursor-pointer'>

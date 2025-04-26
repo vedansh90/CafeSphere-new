@@ -73,12 +73,12 @@ function App() {
         </>
       }/>
        <Route path="/sign" element={
-   <>
-    <Navbar/>
-   <Signup/>
-   <Footer/>
-   </>
- }/>
+          <>
+            <Navbar/>
+          <Signup/>
+          <Footer/>
+          </>
+        }/>
       <Route path="/login/forgot-password" element={
         <>
          <Navbar/>
@@ -118,10 +118,6 @@ function App() {
         <>
         <Navbar/>
         <Profileuser/>
-        
-        
-        
-      
         <Footer/>
         </>
       }/>
