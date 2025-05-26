@@ -10,7 +10,11 @@ const bookingSchema = mongoose.Schema({
     timeSlot: {type: String},
     guests: {type: Number, required: true},
     email: {type: String, required: true},
-    contactNo: {type: Number, required: true}
+    partyType: {type: String},
+    contactNo: {type: Number, required: true},
+    status: {type: String, default: "Pending"},
+    token: {type: String},
+    tokenSent: {type: Boolean, default:false}
 });
 
 const bookingModel = mongoose.model('Booking', bookingSchema);

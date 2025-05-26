@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import deleteImage from "../assets/delet.png";
 import { useParams } from "react-router-dom";
 import Loader from "../assets/original-0e6fdb1ed026c5d0c908737a6dbfdb42.png";
 import { useNavigate } from "react-router-dom";
+
 
 import {
   User,
@@ -30,7 +31,7 @@ const Profileuser = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-
+ const [userImg, setUserImg] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -47,12 +48,30 @@ const Profileuser = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  const removeFromWishlist = async (cafeId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.delete(`http://192.168.1.3:4000/user/profile/save-cafe`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: {
+          cafeId: cafeId 
+        }
+      });
+      setsavecafe(prevCafes => prevCafes.filter(cafe => cafe._id !== cafeId));
+      console.log("cafe removed from wishlist");
+  
+    } catch (error) {
+      console.error('Error from wishlist:', error.message);
+    }
+  };
 
   const toggleEdit = async () => {
     if (isEditing) {
       try {
         await axios.put(
-          `http://192.168.1.5:4000/user/profile/update-details`,
+          `http://192.168.1.3:4000/user/profile/update-details`,
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -72,7 +91,7 @@ const Profileuser = () => {
     const fetchData = async () => {
       try {
         const userRes = await axios.get(
-          `http://192.168.1.5:4000/user/profile/${id}`,
+          `http://192.168.1.3:4000/user/profile/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -81,7 +100,7 @@ const Profileuser = () => {
         setBookings(userRes.data.user.bookings);
 
         const savedRes = await axios.get(
-          `http://192.168.1.5:4000/user/saved-cafes`,
+          `http://192.168.1.3:4000/user/saved-cafes`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -119,17 +138,29 @@ const Profileuser = () => {
       <div className="w-1/4 px-2 py-4">
         <div className="bg-white min-h-[85vh] rounded-2xl px-4 py-2 flex flex-col">
           <div className="flex flex-col gap-2 py-6">
-            <div className="flex justify-center">
+          <div className="flex justify-center items-center relative">
               <img
-                className="w-2/3 rounded-full"
+                className="w-32 h-32 rounded-full object-cover p-[4px] bg-gradient-to-r from-[#f9f3e9] to-[#764B36]"
                 src={
-                  user.image ||
-                  "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                  userImg
+                    ? URL.createObjectURL(userImg)
+                    : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
                 }
                 alt="Profile"
               />
+              <i
+                className="fa-solid fa-pen-to-square absolute bottom-2 right-20 bg-[#f9f3e9] w-6 h-6 p-1.5 flex text-xs rounded-full cursor-pointer text-[#764B36]"
+                // onClick={handleIconClick}
+              ></i>
+              <input
+                type="file"
+                className="hidden"
+                // ref={fileInputRef}
+                // onChange={handleUpload}
+
+              />
             </div>
-            <div className="flex flex-col items-center relative -top-6">
+            <div className="flex flex-col items-center">
               <p className="text-lg font-semibold truncate">{user.name}</p>
               <p>Member since March 28</p>
             </div>
@@ -180,7 +211,7 @@ const Profileuser = () => {
           <div>
             <p
               style={{ color: "#563C24" }}
-              className="text-2xl font-semibold mt-4 mb-4"
+              className="text-2xl font-semibold mt-4 mb-4 "
             >
               Profile
             </p>
@@ -315,7 +346,7 @@ const Profileuser = () => {
                       <p className="text-gray-700 text-sm">
                         Celebration:{" "}
                         <span className="font-medium">
-                          {booking.celebration}
+                          {booking.partyType || "Not Defined"}
                         </span>
                       </p>
                       <p className="text-gray-700 text-sm">
@@ -345,22 +376,27 @@ const Profileuser = () => {
                       </div>
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-lg text-white text-xs font-medium ${
-                        booking.status === "Upcoming"
-                          ? "bg-green-500"
-                          : "bg-gray-500"
+                      className={`px-3 py-1 rounded-lg  text-sm font-medium ${
+                        booking.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : booking.status === "Confirmed"
+                          ? "bg-green-100 text-green-600"
+                          : booking.status === "Approved"
+                          ? "bg-pink-100 text-pink-600"
+                          : "bg-red-100 text-red-600"
                       }`}
                     >
                       {booking.status}
                     </span>
                   </div>
                 ))}
+                <p>No cafes booked yet.</p>
               </div>
             </div>
           </div>
         )}
 
-        {activeSection === "saved" && <CafeList cafes={savecafe} />}
+        {activeSection === "saved" && <CafeList cafes={savecafe} onRemove={removeFromWishlist}  />}
         {activeSection === "settings" && (
           <>
             <AccountSettings />
@@ -371,16 +407,23 @@ const Profileuser = () => {
   );
 };
 
-// Cafe Card Component
 
-const CafeCard = ({ name, location, rating, cafeid }) => {
+
+// Cafe Card Component
+const CafeCard = ({ cafeid, name, location, rating, image, onRemove }) => {
   const navigate = useNavigate();
+
   return (
   <div className="flex justify-center">
     <div className="border border-[#E6B99D] rounded-xl p-4 shadow-sm w-[280px]">
-      <div className="relative w-full h-[180px] bg-gray-200 rounded-lg">
+      <div 
+      style={{
+        backgroundImage: `url('${image}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }} className="relative w-full h-[180px] bg-gray-200 rounded-lg">
         <div className="absolute top-2 left-2 bg-gray-100 p-2 rounded-full shadow-md">
-          <Heart size={16} className="text-gray-500" />
+          <Heart onClick={() => onRemove(cafeid)} size={16} className="text-gray-500 cursor-pointer" />
         </div>
       </div>
       <div className="mt-2">
@@ -392,21 +435,25 @@ const CafeCard = ({ name, location, rating, cafeid }) => {
           <Star size={14} /> {rating}
         </p>
         <div className="flex justify-between mt-4">
-          <button className="px-4 py-2 border rounded-lg bg-[#F4E7DD] cursor-pointer"  onClick={() => navigate(`/cafe/${cafeid}`)}>
+          <button
+            className="px-4 py-2 border rounded-lg bg-[#F4E7DD] cursor-pointer"
+            onClick={() => navigate(`/cafe/${cafeid}`)}
+          >
             View Details
           </button>
-          <button className="px-4 py-2 border rounded-lg bg-amber-900 text-white" onClick={() => navigate(`/cafe/${cafeid}/book`)}>
+          <button className="px-4 py-2 border rounded-lg bg-amber-900 text-white cursor-pointer"
+          onClick={()=> navigate(`/cafe/${cafeid}/book`)}>
             Book Now
           </button>
         </div>
       </div>
     </div>
   </div>
-  )
+  );
 };
 
 // Cafe List Section
-const CafeList = ({ cafes = [] }) => (
+const CafeList = ({ cafes = [], onRemove }) => (
   <div>
     <h2 className="text-2xl font-semibold text-[#563C24] mb-4 mt-5">
       Saved Cafes
@@ -420,10 +467,12 @@ const CafeList = ({ cafes = [] }) => (
           cafes.map((cafe) => (
             <CafeCard
               key={cafe._id}
+              cafeid={cafe._id}
               name={cafe.name}
               location={cafe.location}
               rating={cafe.rating}
-              cafeid={cafe._id}
+              image={cafe.image}
+              onRemove={onRemove}
             />
           ))
         ) : (
@@ -480,7 +529,7 @@ const AccountSettings = () => {
   const handleDeleteAccount = async () => {
     try {
       await axios.delete(
-        `http://192.168.1.5:4000/user/profile/delete-account`,
+        `http://192.168.1.3:4000/user/profile/delete-account`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -532,6 +581,11 @@ const AccountSettings = () => {
     );
   };
 
+  
+
+     
+  
+
   return (
     <div>
       <h2 className="text-2xl font-semibold text-[#563C24] mb-4 mt-5">
@@ -572,7 +626,6 @@ const AccountSettings = () => {
             />
           </div>
         </div>
-
         {/* Password & Security */}
         <div className="mt-4 border-t pt-4">
           <h3 className="font-semibold">Password & Security</h3>
@@ -585,7 +638,7 @@ const AccountSettings = () => {
 
           {showPasswordForm && (
             <form
-              onSubmit={handlePasswordChange}
+              onSubmit={ handlePasswordChange}
               className="mt-4 p-4 border border-[#F0BB92] rounded-xl"
             >
               <h4 className="font-semibold text-[#563C24] mb-4 italic text-lg">

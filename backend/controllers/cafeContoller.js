@@ -73,7 +73,7 @@ const bookCafe = async (req, res) => {
             date,
             timeSlot,
             partyType,
-            specialRequests
+            specialRequests,
         };
 
         const newBooking = new bookingModel(bookingData);

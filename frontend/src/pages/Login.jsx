@@ -12,7 +12,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://192.168.1.5:4000/user/login', {
+      const response = await axios.post('http://192.168.1.3:4000/user/login', {
         email,
         password,
       });

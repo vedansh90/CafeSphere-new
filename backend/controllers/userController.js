@@ -33,7 +33,7 @@ const userLogin = async (req, res) => {
         }
         else{
             // user not found
-            return res.json({success: false, message:"Invalid Email"})
+            return res.json({success: false, message:"Account not exist"});
         }
     }
     catch(err){
@@ -203,6 +203,35 @@ const saveCafeToUser = async (req, res) => {
     }
 }
 
+const removeCafeFromWishlist = async (req, res) => {
+    try{
+        
+        const userId = req.user.id;
+        const {cafeId} = req.body;
+
+        const user = await userModel.findById(userId);
+        if(!user){
+            return res.json({success: false, message: "User Not found"});
+        }
+
+        console.log("Wishlist before:", user.savedCafes.map(id => id.toString()));
+        console.log("Removing cafe ID:", cafeId);
+    
+        const updatedWishlist = user.savedCafes.filter(
+          (cafe) => cafe.toString() !== cafeId
+        );
+    
+        user.set("savedCafes", updatedWishlist);
+    
+        await user.save();
+
+       res.json({success: true,  message: "Cafe removed from wishlist"})
+    }
+    catch(err){
+        res.json({success: false, message: err.message});
+    }
+}
+
 const savedCafes = async (req, res) => {
     try{
         
@@ -245,5 +274,86 @@ const bookedCafes = async (req, res) => {
     }
 }
 
+const ProfileChangePassword = async (req, res) => {
+    try{
+        let {oldPassword, newPassword, confirmPassword} = req.body;
 
-export {userLogin, userSignup, forgotPassword, resetPassword, userProfile, saveCafeToUser, savedCafes, bookedCafes}
+        if(!oldPassword || !newPassword || !confirmPassword){
+            return res.json({success: false, message: "All feilds are required"});
+        }
+        const user  = await userModel.findById(req.user.id);
+
+        if(!user){
+            console.log("User not found");
+            return res.json({success: false, message: "User not found"});
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            console.log("Incorrect old password");
+            return res.json({success: false, message: "Incorrect old password" });
+        }
+
+        if(newPassword != confirmPassword){
+            console.log("Passwords do not match");
+            return res.json({success: false, message: "Passwords do not match"});
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({success: true, message: "Password updated Successfully"});
+    }
+    catch(err){
+        return res.json({success: false, message: err.message});
+    }
+}
+
+const deleteUserAccount = async (req, res) => {
+    try{
+        const user = await userModel.findByIdAndDelete(req.user.id);
+
+        if(!user){
+            return res.json({success: false, message: "User not found"});
+        }
+
+        res.json({success: true, message: "Account deleted Successfully"});
+    }
+    catch(err){
+        return res.json({success: false, message: err.message});
+    }
+}
+
+const updateUserDetails = async (req, res) => {
+    try{
+        let {name, email, contactNo, location} = req.body;
+
+        if(!name || !email || !contactNo || !location){
+            res.json({success: false, message: "Feild cannot be empty"});
+        }
+
+        const user = await userModel.findById(req.user.id);
+        if(!user){
+            return res.json({success: false, message: "User not found"});
+        }
+
+        user.name = name;
+        user.email = email;
+        user.contactNo = contactNo;
+        user.location = location;
+
+        await user.save();
+        res.json({success: true, message: ""})
+    }
+    catch(err){
+
+    }
+}
+
+
+
+
+export {userLogin, userSignup, forgotPassword, resetPassword, userProfile, saveCafeToUser, savedCafes, bookedCafes, ProfileChangePassword, deleteUserAccount, updateUserDetails, removeCafeFromWishlist}

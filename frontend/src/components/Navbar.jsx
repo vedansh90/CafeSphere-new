@@ -29,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#f9f3e9] shadow-md fixed w-full z-50 sticky">
+    <nav className="bg-[#f9f3e9] w-full z-50 shadow-[0_4px_10px_-2px_#764B36] sticky top-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between  h-16 items-center">
           {/* Logo */}
@@ -51,9 +51,7 @@ const Navbar = () => {
                 Welcome, <span className="font-medium">{username.toUpperCase()}</span>
               </li>
             )}
-            <NavLink to="/add-cafe">
-              <li className="text-[#764B36] font-medium hover:underline">Add Cafe</li>
-            </NavLink>
+            
             <NavLink to="/about">
               <li className="text-[#764B36] font-medium hover:underline">About Us</li>
             </NavLink>
@@ -89,6 +87,9 @@ const Navbar = () => {
              
             ) : (
               <>
+                <NavLink to="/add-cafe">
+                  <li className="text-[#764B36] font-medium hover:underline">Add Cafe</li>
+                </NavLink>
                 <NavLink to="/login">
                   <li className="text-[#764B36] font-medium hover:underline">Sign in</li>
                 </NavLink>

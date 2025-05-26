@@ -1,11 +1,15 @@
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from 'cloudinary'
 
-const storage = multer.diskStorage({
-    filename: function(req, file, callback){
-        callback(null, file.originalname)
-    }
-})
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'cafesphere', 
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
 
-const upload = multer({storage})
+const parser = multer({ storage: storage });
 
-export default upload
+export default parser

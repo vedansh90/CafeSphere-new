@@ -8,6 +8,10 @@ import userModel from '../models/userModel.js';
 import menuModel from '../models/menuModel.js';
 import drinkModel from '../models/drinkModel.js';
 import { model } from 'mongoose';
+import confirmBooking from '../utils/confirmBooking.js';
+import bookingModel from '../models/bookingModel.js';
+import rejectBooking from '../utils/rejectBooking.js';
+
 
 
 const addCafe = async (req, res) => {
@@ -114,7 +118,7 @@ const getOneCafe = async (req, res) => {
         .populate({
             path: "bookings", 
             model: "Booking",
-            select: "guests date timeSlot bookingName", 
+            select: "guests date timeSlot bookingName status email partyType", 
         })
         .populate({
             path: "menu",
@@ -212,4 +216,86 @@ const AddDrinks = async (req, res) => {
     }
 }
 
-export {addCafe, getCafes, cafeLogin, getOneCafe, AddItemToMenu, AddDrinks};
+const confirmbooking = async (req, res) => {
+    try{
+
+        // let {email} = req.body;
+        const {id} = req.body;
+        
+        const booking = await bookingModel.findById(id);
+        
+        if(!booking){
+            return res.json({success: false, message: "Booking not found"})
+        }
+
+        booking.status = "Confirmed";
+        await booking.save();
+
+        confirmBooking(booking.email, booking.bookingName);
+
+        res.json({success: true, message: "Booking confirm"});
+    }
+    catch(err){
+        res.json({success: false, message: err.message});
+    }
+}
+
+const rejectbooking = async (req, res) => {
+    try{
+        const {id} = req.body;
+
+        const booking = await bookingModel.findById(id);
+
+        if(!booking){
+            return res.json({success: false, message: "Booking not found"})
+        }
+
+        booking.status = "Rejected"
+        await booking.save();
+
+        rejectBooking(booking.email, booking.bookingName);
+
+        res.json({success: true, message: "Booking rejected"});
+    }
+    catch(err){
+        res.json({success: false, message: err.message});
+    }
+}
+
+const verifyToken = async (req, res) => {
+    try{
+        const {token} = req.body;
+
+        const booking = await bookingModel.findOne({ token });
+        console.log("booking Dtaa", booking)
+        if (!booking) {
+            return res.json({success: false, message: "Invalid token. number" });
+        }
+
+        const currentTime = new Date();
+        
+        const [hours, minutes] = booking.timeSlot.split(':').map(Number);
+        const bookingDateTime = new Date(booking.date);
+        bookingDateTime.setHours(hours, minutes, 0, 0);
+
+        const timeDifference = (bookingDateTime - currentTime) / (1000 * 60);
+
+        if (timeDifference > 10) {
+            return res.json({
+                success: false,
+                message: "Token can only be verified within 10 minutes of the booking time.",
+            });
+        }
+      
+        booking.status = "Approved";
+        await booking.save();
+      
+        res.json({success: true, message: "Booking approved.", booking });
+    }
+    catch(err){
+        res.json({success: false, message: err.message});
+        console.log("Verify token error");
+    }
+}
+
+export {addCafe, getCafes, cafeLogin, getOneCafe, AddItemToMenu, getMenu, AddDrinks, confirmbooking, rejectbooking, verifyToken};

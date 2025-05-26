@@ -13,7 +13,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.1.5:4000/owner/get-cafes")
+      .get("http://192.168.1.3:4000/owner/get-cafes")
       .then((response) => {
         console.log("Fetched Data:", response.data);
         setCafes(response.data);
@@ -37,7 +37,7 @@ const Home = () => {
   const savecafetowishlist = async (cafeId) => {
     try {
       const response = await axios.post(
-        "http://192.168.1.5:4000/user/save-cafe",
+        "http://192.168.1.3:4000/user/save-cafe",
         { cafeId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -59,7 +59,7 @@ const Home = () => {
   const saveCafeToWishlist = async (cafeId) => {
     try {
       const response = await axios.post(
-        `http://192.168.1.5:4000/user/save-cafe`,
+        `http://192.168.1.3:4000/user/save-cafe`,
         { cafeId },
         {
           headers: { Authorization: `Bearer ${token} ` },
